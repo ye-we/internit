@@ -1,0 +1,27 @@
+{
+  "name": "@rue/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node --import tsx src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@rue/classifier": "workspace:*",
+    "@rue/db": "workspace:*",
+    "@rue/scraper": "workspace:*",
+    "@rue/shared": "workspace:*",
+    "drizzle-orm": "^0.36.4",
+    "dotenv": "^16.4.7",
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

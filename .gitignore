@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+.turbo/
+.vite/
+.next/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor
+.DS_Store
+.idea/
+.vscode/
+
+# runtime
+*.tsbuildinfo
+
+# verified output of verify-orgs.ts
+orgs-verified.csv

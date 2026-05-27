@@ -1,0 +1,31 @@
+{
+  "name": "rue",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @rue/db generate",
+    "db:migrate": "pnpm --filter @rue/db migrate",
+    "db:seed": "pnpm --filter @rue/db seed",
+    "verify-orgs": "tsx verify-orgs.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "tsx": "^4.19.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "globalEnv": ["NODE_ENV"],
+  "globalPassThroughEnv": ["DATABASE_URL", "ANTHROPIC_API_KEY", "TELEGRAM_BOT_TOKEN", "ADMIN_TOKEN"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".vite/**", "build/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    }
+  }
+}
