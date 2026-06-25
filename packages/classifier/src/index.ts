@@ -139,43 +139,109 @@ function keywordMatches(text: string, keyword: string): boolean {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i").test(text);
 }
 
+const LLM_SYSTEM =
+  "Classify Ethiopian internship listings for senior-year social-studies undergrads. " +
+  'Return only JSON: {"fits":boolean,"fields":string[],"fit_score":number,"reason":"short"}. ' +
+  "Use only these fields: " +
+  FIELD_TAGS.join(", ") +
+  ". Do not include health, logistics, finance, engineering, sales, driver, or IT support roles unless the listing is clearly policy/governance/human-rights focused.";
+
+const LLM_USER = (input: { title: string; description: string }) =>
+  `Title: ${input.title}\n\nDescription:\n${input.description.slice(0, 6000)}`;
+
+// Tier-2 LLM fallback for ambiguous listings. Defaults to Gemini (free tier;
+// the only key this project has) and falls back to Anthropic when configured.
+// The caller (classify) already wraps this in .catch(() => null), so a missing
+// key, rate limit, or bad response degrades to the keyword heuristic — it never
+// breaks the pipeline.
 async function classifyWithLlm(input: {
   title: string;
   description: string;
 }): Promise<Classification | null> {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
+  const provider = (
+    process.env.CLASSIFIER_PROVIDER ?? (process.env.GEMINI_API_KEY ? "gemini" : "anthropic")
+  ).toLowerCase();
 
+  if (provider === "gemini" && process.env.GEMINI_API_KEY) return classifyWithGemini(input);
+  if (process.env.ANTHROPIC_API_KEY) return classifyWithAnthropic(input);
+  return null;
+}
+
+async function classifyWithGemini(input: {
+  title: string;
+  description: string;
+}): Promise<Classification | null> {
+  const model = process.env.CLASSIFIER_MODEL ?? "gemini-2.5-flash-lite";
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 30_000);
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GEMINI_API_KEY!,
+        },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: LLM_SYSTEM }] },
+          contents: [{ parts: [{ text: LLM_USER(input) }] }],
+          generationConfig: {
+            temperature: 0,
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                fits: { type: "boolean" },
+                fields: { type: "array", items: { type: "string", enum: [...FIELD_TAGS] } },
+                fit_score: { type: "integer" },
+                reason: { type: "string" },
+              },
+              required: ["fits", "fields", "fit_score", "reason"],
+            },
+          },
+        }),
+        signal: ctrl.signal,
+      },
+    );
+    if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const json = (await res.json()) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    };
+    const text = (json.candidates?.[0]?.content?.parts ?? [])
+      .map((p) => p.text ?? "")
+      .join("")
+      .trim();
+    return text ? normalizeClassification(JSON.parse(text)) : null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function classifyWithAnthropic(input: {
+  title: string;
+  description: string;
+}): Promise<Classification | null> {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const msg = await anthropic.messages.create({
-    model: process.env.CLASSIFIER_MODEL ?? "claude-3-5-haiku-latest",
+    model: process.env.CLASSIFIER_MODEL ?? "claude-haiku-4-5",
     max_tokens: 300,
-    temperature: 0,
-    system:
-      "Classify Ethiopian internship listings for senior-year social-studies undergrads. Return only JSON: {\"fits\":boolean,\"fields\":string[],\"fit_score\":number,\"reason\":\"short\"}. Use only these fields: " +
-      FIELD_TAGS.join(", ") +
-      ". Do not include health, logistics, finance, engineering, sales, driver, or IT support roles unless the listing is clearly policy/governance/human-rights focused.",
-    messages: [
-      {
-        role: "user",
-        content: `Title: ${input.title}\n\nDescription:\n${input.description.slice(0, 6000)}`,
-      },
-    ],
+    system: LLM_SYSTEM,
+    messages: [{ role: "user", content: LLM_USER(input) }],
   });
-
   const text = msg.content
     .filter((part) => part.type === "text")
     .map((part) => part.text)
     .join("\n")
     .trim();
-  if (!text) return null;
+  return text ? normalizeClassification(JSON.parse(text)) : null;
+}
 
-  const parsed = JSON.parse(text) as Classification;
+function normalizeClassification(parsed: Classification): Classification {
   return {
     fits: Boolean(parsed.fits),
-    fields: parsed.fields.filter((f): f is FieldTag =>
-      FIELD_TAGS.includes(f as FieldTag),
-    ),
-    fit_score: Math.max(0, Math.min(100, Math.round(parsed.fit_score))),
-    reason: String(parsed.reason ?? "LLM fallback classification"),
+    fields: (parsed.fields ?? []).filter((f): f is FieldTag => FIELD_TAGS.includes(f as FieldTag)),
+    fit_score: Math.max(0, Math.min(100, Math.round(Number(parsed.fit_score) || 0))),
+    reason: String(parsed.reason ?? "LLM classification"),
   };
 }

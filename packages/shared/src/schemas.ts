@@ -25,6 +25,7 @@ export const ListingSchema = z.object({
   field_tags: z.array(z.string()),
   fit_score: z.number().int().min(0).max(100),
   status: z.enum(LISTING_STATUS),
+  structured: z.lazy(() => StructuredListingSchema).nullable(),
 });
 export type Listing = z.infer<typeof ListingSchema>;
 
@@ -76,3 +77,37 @@ export const ClassificationSchema = z.object({
   reason: z.string(),
 });
 export type Classification = z.infer<typeof ClassificationSchema>;
+
+export const StructuredListingSchema = z.object({
+  organization: z.string().nullable(),
+  location: z.string().nullable(),
+  deadline: z.string().nullable(),
+  application_url: z.string().url().nullable(),
+  application_email: z.string().nullable(),
+  application_method: z.enum(["portal", "email", "in-person", "unclear"]),
+  ethiopia_access: z.enum([
+    "ethiopia-based",
+    "remote",
+    "sponsored-abroad",
+    "open-but-self-funded-abroad",
+    "not-realistic",
+    "unclear",
+  ]),
+  ethiopia_access_reason: z.string(),
+  is_paid: z.boolean().nullable(),
+  stipend_text: z.string().nullable(),
+  summary: z.string(),
+  sections: z.array(
+    z.object({
+      title: z.string(),
+      paragraphs: z.array(z.string()),
+      bullets: z.array(z.string()),
+    }),
+  ),
+  requirements: z.array(z.string()),
+  responsibilities: z.array(z.string()),
+  how_to_apply: z.string().nullable(),
+  warnings: z.array(z.string()),
+  confidence: z.number().min(0).max(1),
+});
+export type StructuredListing = z.infer<typeof StructuredListingSchema>;

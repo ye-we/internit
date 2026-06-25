@@ -1,30 +1,30 @@
 slug,name,category,region,addis_office,website,careers_url,internship_url,application_email,twitter,linkedin,telegram,posts_publicly,has_remote,has_paid,scrape_priority,verification_needed,notes
-undp,United Nations Development Programme,un,global,yes,https://www.undp.org,https://jobs.undp.org,https://www.undp.org/careers/internships,,@UNDP,https://www.linkedin.com/company/undp,,yes,yes,yes,high,no,"Ethiopia office runs annual omnibus intern call; recurring deadlines"
-undp-ethiopia,UNDP Ethiopia,un,ethiopia,yes,https://www.undp.org/ethiopia,https://jobs.undp.org,,,@UNDPEthiopia,,,yes,no,yes,high,no,"May 28 2026 omnibus call; 11 streams"
-uneca,UN Economic Commission for Africa,un,africa-regional,yes,https://www.uneca.org,https://careers.un.org,https://www.uneca.org/careers,,@_AfricanUnion @ECA_OFFICIAL,https://www.linkedin.com/company/united-nations-economic-commission-for-africa,,yes,no,no,high,no,"Recurring monthly intern postings; unpaid"
+undp,United Nations Development Programme,un,global,yes,https://www.undp.org,https://jobs.undp.org,https://www.undp.org/careers/internships,,@UNDP,https://www.linkedin.com/company/undp,,yes,yes,yes,high,no,Ethiopia office runs annual omnibus intern call; recurring deadlines
+undp-ethiopia,UNDP Ethiopia,un,ethiopia,yes,https://www.undp.org/ethiopia,https://jobs.undp.org,,,@UNDPEthiopia,,,yes,no,yes,high,no,May 28 2026 omnibus call; 11 streams
+uneca,UN Economic Commission for Africa,un,africa-regional,yes,https://www.uneca.org,https://careers.un.org,https://www.uneca.org/vacancy-type/internship,,@_AfricanUnion @ECA_OFFICIAL,https://www.linkedin.com/company/united-nations-economic-commission-for-africa,,yes,no,no,high,no,Recurring monthly intern postings; unpaid
 unicef,UNICEF,un,global,yes,https://www.unicef.org,https://jobs.unicef.org,https://www.unicef.org/careers/internships,,@UNICEF,https://www.linkedin.com/company/unicef,,yes,yes,yes,medium,no,
 unicef-ethiopia,UNICEF Ethiopia,un,ethiopia,yes,https://www.unicef.org/ethiopia,https://jobs.unicef.org,,,@UNICEFEthiopia,,,yes,no,sometimes,medium,no,
 unfpa,UN Population Fund,un,global,yes,https://www.unfpa.org,https://www.unfpa.org/jobs,https://www.unfpa.org/internship,,@UNFPA,,,yes,sometimes,sometimes,medium,no,
-un-women,UN Women,un,global,yes,https://www.unwomen.org,https://jobs.unwomen.org,https://www.unwomen.org/en/about-us/employment/internship-programme,,@UN_Women,,,yes,sometimes,sometimes,high,no,"Liaison Office to AU + UNECA in Addis"
-unhcr,UN High Commissioner for Refugees,un,global,yes,https://www.unhcr.org,https://www.unhcr.org/careers,https://www.unhcr.org/get-involved/work-us/careers-unhcr/types-contracts-and-appointments/internships,,@Refugees,,,yes,yes,yes,high,no,"Paid even remote; rolling applications"
-iom,International Organization for Migration,un,global,yes,https://www.iom.int,https://www.iom.int/careers,https://www.iom.int/internships,,@UNmigration,,,yes,sometimes,sometimes,high,no,
-iom-ethiopia,IOM Ethiopia,un,ethiopia,yes,https://ethiopia.iom.int,https://ethiopia.iom.int/how-apply-internship,,,@IOMEthiopia,,,yes,no,no,high,no,"Works through AAU; institutional nomination"
+un-women,UN Women,un,global,yes,https://www.unwomen.org,https://jobs.unwomen.org,https://www.unwomen.org/en/about-us/employment/internship-programme,,@UN_Women,,,yes,sometimes,sometimes,high,no,Liaison Office to AU + UNECA in Addis
+unhcr,UN High Commissioner for Refugees,un,global,yes,https://www.unhcr.org,https://unhcr.wd3.myworkdayjobs.com/en-US/External,,,@Refugees,,,yes,yes,yes,high,no,Paid even remote; rolling applications
+iom,International Organization for Migration,un,global,yes,https://www.iom.int,https://www.iom.int/iom-career-gateways,,,@UNmigration,,,yes,sometimes,sometimes,high,no,
+iom-ethiopia,IOM Ethiopia,un,ethiopia,yes,https://ethiopia.iom.int,https://ethiopia.iom.int/how-apply-internship,,,@IOMEthiopia,,,yes,no,no,high,no,Works through AAU; institutional nomination
 ocha,UN Office for Coordination of Humanitarian Affairs,un,global,yes,https://www.unocha.org,https://careers.un.org,https://www.unocha.org/careers,,@UNOCHA,,,yes,sometimes,no,medium,no,
-fao,Food and Agriculture Organization,un,global,yes,https://www.fao.org,https://www.fao.org/employment,https://www.fao.org/employment/programmes/internship-programme,,@FAO,,,yes,sometimes,sometimes,low,no,"Less relevant for IR but governance unit exists"
+fao,Food and Agriculture Organization,un,global,yes,https://www.fao.org,https://www.fao.org/employment,https://www.fao.org/employment/programmes/internship-programme,,@FAO,,,yes,sometimes,sometimes,low,no,Less relevant for IR but governance unit exists
 wfp,World Food Programme,un,global,yes,https://www.wfp.org,https://www.wfp.org/careers,https://www.wfp.org/careers/internships,,@WFP,,,yes,sometimes,sometimes,low,no,
 ilo,International Labour Organization,un,global,yes,https://www.ilo.org,https://www.ilo.org/jobs,https://www.ilo.org/jobs/internship-programme,,@ilo,,,yes,no,yes,medium,no,
-ohchr,UN Human Rights Office,un,global,yes,https://www.ohchr.org,https://www.ohchr.org/en/careers,https://www.ohchr.org/en/careers/internships,,@UNHumanRights,,,yes,no,no,high,no,"Addis ESARO office recurring intern cycles"
+ohchr,UN Human Rights Office,un,global,yes,https://www.ohchr.org,https://www.ohchr.org/en/careers,https://www.ohchr.org/en/careers/internships,,@UNHumanRights,,,yes,no,no,high,no,Addis ESARO office recurring intern cycles
 who,World Health Organization,un,global,yes,https://www.who.int,https://careers.who.int,https://www.who.int/careers/internship-programme,,@WHO,,,yes,sometimes,sometimes,low,no,
 unaids,Joint UN Programme on HIV/AIDS,un,global,yes,https://www.unaids.org,https://www.unaids.org/en/careers,,,@UNAIDS,,,yes,sometimes,sometimes,low,no,
 unops,UN Office for Project Services,un,global,yes,https://www.unops.org,https://jobs.unops.org,,,@UNOPS,,,yes,sometimes,sometimes,low,no,
 unctad,UN Conference on Trade and Development,un,global,yes,https://unctad.org,https://careers.un.org,https://unctad.org/about/careers/internships,,@UNCTAD,,,yes,no,no,medium,no,
-unv,UN Volunteers,un,global,yes,https://www.unv.org,https://www.unv.org/become-volunteer,https://www.unv.org/become-online-volunteer,,@UNVolunteers,,,yes,yes,no,medium,no,"Online volunteering up to 20 hr/week 12 weeks"
+unv,UN Volunteers,un,global,yes,https://www.unv.org,https://www.unv.org/become-volunteer,https://www.unv.org/become-online-volunteer,,@UNVolunteers,,,yes,yes,no,medium,no,Online volunteering up to 20 hr/week 12 weeks
 unesco,UNESCO,un,global,yes,https://www.unesco.org,https://careers.unesco.org,https://www.unesco.org/en/careers/internships,,@UNESCO,,,yes,sometimes,sometimes,low,no,
 un-habitat,UN-Habitat,un,global,yes,https://unhabitat.org,https://unhabitat.org/about-us/careers,https://unhabitat.org/about-us/internships,,@UNHABITAT,,,yes,sometimes,no,low,no,
 unodc,UN Office on Drugs and Crime,un,global,yes,https://www.unodc.org,https://www.unodc.org/unodc/en/about-unodc/jobs.html,,,@UNODC,,,yes,sometimes,sometimes,medium,no,
 undss,UN Department of Safety and Security,un,global,yes,https://www.un.org/en/safety-and-security,https://careers.un.org,,,,,,yes,no,no,low,no,
-un-secretariat,UN Secretariat,un,global,no,https://www.un.org,https://careers.un.org,https://careers.un.org/lbw/home.aspx?viewtype=ip,,@UN,,,yes,sometimes,no,medium,no,"Includes DPPA DPO DCO etc"
-un-dppa,UN Department of Political and Peacebuilding Affairs,un,global,no,https://dppa.un.org,https://careers.un.org,,,@UNDPPA,,,yes,yes,no,high,no,"Policy Planning Unit hosts research interns"
+un-secretariat,UN Secretariat,un,global,no,https://www.un.org,https://careers.un.org,https://careers.un.org/lbw/home.aspx?viewtype=ip,,@UN,,,yes,sometimes,no,medium,no,Includes DPPA DPO DCO etc
+un-dppa,UN Department of Political and Peacebuilding Affairs,un,global,no,https://dppa.un.org,https://careers.un.org,,,@UNDPPA,,,yes,yes,no,high,no,Policy Planning Unit hosts research interns
 un-dpo,UN Department of Peace Operations,un,global,no,https://dppa.un.org,https://careers.un.org,,,@UNPeacekeeping,,,yes,sometimes,no,high,no,
 un-dco,UN Development Coordination Office,un,global,no,https://www.un.org/development-coordination-office,https://careers.un.org,,,,,,yes,sometimes,no,medium,no,
 unidir,UN Institute for Disarmament Research,un,global,no,https://unidir.org,https://unidir.org/careers,https://unidir.org/internships,,@UNIDIR,,,yes,no,no,medium,no,
@@ -32,32 +32,32 @@ unitar,UN Institute for Training and Research,un,global,no,https://www.unitar.or
 unu,UN University,un,global,no,https://unu.edu,https://unu.edu/about/jobs,,,@UNUniversity,,,yes,sometimes,sometimes,low,no,
 unrisd,UN Research Institute for Social Development,un,global,no,https://www.unrisd.org,https://www.unrisd.org/jobs,,,@UNRISD,,,yes,sometimes,no,medium,no,
 unu-wider,UN University WIDER,un,global,no,https://www.wider.unu.edu,https://www.wider.unu.edu/about-us/internships,,,@UNUWIDER,,,yes,no,no,medium,no,
-au,African Union Commission,au,africa-regional,yes,https://au.int,https://jobs.au.int,https://jobs.au.int/job/Internship-Program/1506-en_US/,,@_AfricanUnion,,,yes,no,no,critical,no,"50-position standing intern program through Dec 31 2026"
-au-paps,AU Political Affairs Peace and Security,au,africa-regional,yes,https://au.int/en/about/departments,https://jobs.au.int,,,@AU_PAPS,,,yes,no,no,critical,no,"Sub-department of AU; apply via main AU portal"
+au,African Union Commission,au,africa-regional,yes,https://au.int,https://jobs.au.int,https://jobs.au.int/job/Internship-Program/1506-en_US/,,@_AfricanUnion,,,yes,no,no,critical,no,50-position standing intern program through Dec 31 2026
+au-paps,AU Political Affairs Peace and Security,au,africa-regional,yes,https://au.int/en/about/departments,https://jobs.au.int,,,@AU_PAPS,,,yes,no,no,critical,no,Sub-department of AU; apply via main AU portal
 au-hhasd,AU Health Humanitarian Affairs and Social Development,au,africa-regional,yes,https://au.int/en/about/departments,https://jobs.au.int,,,,,,yes,no,no,high,no,
 au-psc,AU Peace and Security Council,au,africa-regional,yes,https://www.peaceau.org,https://jobs.au.int,,,,,,yes,no,no,high,no,
-african-court,African Court on Human and Peoples' Rights,au,africa-regional,no,https://www.african-court.org,https://www.african-court.org/wpafc/vacancies,,,@AfricanCourt,,,yes,no,sometimes,high,no,"Arusha Tanzania"
-achpr,African Commission on Human and Peoples' Rights,au,africa-regional,no,https://achpr.au.int,https://achpr.au.int/en/vacancies,,,@achpr_cadhp,,,yes,no,no,high,no,"Banjul Gambia"
-pap,Pan-African Parliament,au,africa-regional,no,https://www.panafricanparliament.org,https://jobs.au.int,,,@PanAfParl,,,yes,no,no,medium,no,"Midrand South Africa"
-auda-nepad,AUDA-NEPAD,au,africa-regional,no,https://www.nepad.org,https://www.nepad.org/careers,,,@AUDA_NEPAD,,,yes,sometimes,sometimes,medium,no,"Midrand South Africa"
+african-court,African Court on Human and Peoples' Rights,au,africa-regional,no,https://www.african-court.org,https://www.african-court.org/wpafc/vacancies,,,@AfricanCourt,,,yes,no,sometimes,high,no,Arusha Tanzania
+achpr,African Commission on Human and Peoples' Rights,au,africa-regional,no,https://achpr.au.int,https://jobs.au.int/,,,@achpr_cadhp,,,yes,no,no,high,no,Banjul Gambia
+pap,Pan-African Parliament,au,africa-regional,no,https://www.panafricanparliament.org,https://jobs.au.int,,,@PanAfParl,,,yes,no,no,medium,no,Midrand South Africa
+auda-nepad,AUDA-NEPAD,au,africa-regional,no,https://www.nepad.org,https://www.nepad.org/careers,,,@AUDA_NEPAD,,,yes,sometimes,sometimes,medium,no,Midrand South Africa
 aprm,African Peer Review Mechanism,au,africa-regional,no,https://www.aprm-au.org,https://www.aprm-au.org/career,,,@APRMSecretariat,,,yes,no,no,medium,no,
-africa-cdc,Africa CDC,au,africa-regional,yes,https://africacdc.org,https://africacdc.org/careers,,,@AfricaCDC,,,yes,sometimes,sometimes,medium,no,"Now headquartered in Addis"
-afcfta,African Continental Free Trade Area Secretariat,au,africa-regional,no,https://au-afcfta.org,https://au-afcfta.org/careers,,,@AfCFTA,,,yes,no,sometimes,medium,no,"Accra Ghana"
-acbf,African Capacity Building Foundation,au,africa-regional,no,https://www.acbf-pact.org,https://www.acbf-pact.org/careers,,,@ACBF_Official,,,yes,sometimes,sometimes,low,no,"Harare Zimbabwe"
-igad,Intergovernmental Authority on Development,regional,africa-regional,no,https://igad.int,https://igad.int/careers,,,@igadsecretariat,,,yes,no,sometimes,high,no,"Djibouti HQ"
+africa-cdc,Africa CDC,au,africa-regional,yes,https://africacdc.org,https://africacdc.org/careers,,,@AfricaCDC,,,yes,sometimes,sometimes,medium,no,Now headquartered in Addis
+afcfta,African Continental Free Trade Area Secretariat,au,africa-regional,no,https://au-afcfta.org,https://au-afcfta.org/careers,,,@AfCFTA,,,yes,no,sometimes,medium,no,Accra Ghana
+acbf,African Capacity Building Foundation,au,africa-regional,no,https://www.acbf-pact.org,https://www.acbf-pact.org/careers,,,@ACBF_Official,,,yes,sometimes,sometimes,low,no,Harare Zimbabwe
+igad,Intergovernmental Authority on Development,regional,africa-regional,no,https://igad.int,https://igad.int/careers,,,@igadsecretariat,,,yes,no,sometimes,high,no,Djibouti HQ
 icpac,IGAD Climate Prediction and Applications Centre,regional,africa-regional,no,https://www.icpac.net,https://www.icpac.net/about-us/career,,,@ICPAC_,,,yes,sometimes,no,low,no,
-comesa,Common Market for Eastern and Southern Africa,regional,africa-regional,no,https://www.comesa.int,https://www.comesa.int/category/vacancies,,,@comesa_lusaka,,,yes,no,sometimes,medium,no,"Lusaka Zambia"
-eac,East African Community,regional,africa-regional,no,https://www.eac.int,https://www.eac.int/vacancies,,,@jumuiya,,,yes,no,sometimes,medium,no,"Arusha Tanzania"
-ecowas,Economic Community of West African States,regional,africa-regional,no,https://www.ecowas.int,https://www.ecowas.int/category/jobs,,,@ecowas_cedeao,,,yes,no,sometimes,low,no,"Abuja Nigeria"
-sadc,Southern African Development Community,regional,africa-regional,no,https://www.sadc.int,https://www.sadc.int/opportunities/jobs,,,@SADC_News,,,yes,no,sometimes,low,no,"Gaborone Botswana"
-cfr,Council on Foreign Relations,think-tank,usa,no,https://www.cfr.org,https://www.cfr.org/career-opportunities,https://www.cfr.org/internships,,@CFR_org,,,yes,no,yes,medium,no,"Blavatnik Internship; US work auth required"
-chatham-house,Chatham House,think-tank,uk,no,https://www.chathamhouse.org,https://www.chathamhouse.org/about-us/our-people/work-us,,,@ChathamHouse,,,yes,no,yes,medium,no,"UK work auth typically required"
-brookings,Brookings Institution,think-tank,usa,no,https://www.brookings.edu,https://www.brookings.edu/careers,https://www.brookings.edu/careers/internships,,@BrookingsInst,,,yes,no,yes,medium,no,"US auth typically required"
+comesa,Common Market for Eastern and Southern Africa,regional,africa-regional,no,https://www.comesa.int,https://www.comesa.int/category/vacancies,,,@comesa_lusaka,,,yes,no,sometimes,medium,no,Lusaka Zambia
+eac,East African Community,regional,africa-regional,no,https://www.eac.int,https://www.eac.int/vacancies,,,@jumuiya,,,yes,no,sometimes,medium,no,Arusha Tanzania
+ecowas,Economic Community of West African States,regional,africa-regional,no,https://www.ecowas.int,https://www.ecowas.int/category/jobs,,,@ecowas_cedeao,,,yes,no,sometimes,low,no,Abuja Nigeria
+sadc,Southern African Development Community,regional,africa-regional,no,https://www.sadc.int,https://www.sadc.int/opportunities/jobs,,,@SADC_News,,,yes,no,sometimes,low,no,Gaborone Botswana
+cfr,Council on Foreign Relations,think-tank,usa,no,https://www.cfr.org,https://www.cfr.org/career-opportunities,https://www.cfr.org/internships,,@CFR_org,,,yes,no,yes,medium,no,Blavatnik Internship; US work auth required
+chatham-house,Chatham House,think-tank,uk,no,https://www.chathamhouse.org,https://www.chathamhouse.org/about-us/our-people/work-us,,,@ChathamHouse,,,yes,no,yes,medium,no,UK work auth typically required
+brookings,Brookings Institution,think-tank,usa,no,https://www.brookings.edu,https://www.brookings.edu/careers,https://www.brookings.edu/careers/internships,,@BrookingsInst,,,yes,no,yes,medium,no,US auth typically required
 carnegie,Carnegie Endowment for International Peace,think-tank,usa,no,https://carnegieendowment.org,https://carnegieendowment.org/about/careers,https://carnegieendowment.org/about/internships,,@CarnegieEndow,,,yes,sometimes,yes,medium,no,
 csis,Center for Strategic and International Studies,think-tank,usa,no,https://www.csis.org,https://www.csis.org/about/careers,https://www.csis.org/programs/internships,,@CSIS,,,yes,no,yes,low,no,
-atlantic-council,Atlantic Council,think-tank,usa,no,https://www.atlanticcouncil.org,https://www.atlanticcouncil.org/about/careers,https://www.atlanticcouncil.org/about/young-global-professionals,,@AtlanticCouncil,,,yes,no,yes,high,no,"Has Africa Center; DC presence + US auth required"
+atlantic-council,Atlantic Council,think-tank,usa,no,https://www.atlanticcouncil.org,https://www.atlanticcouncil.org/about/careers,https://www.atlanticcouncil.org/careers/internships/,,@AtlanticCouncil,,,yes,no,yes,high,no,Has Africa Center; DC presence + US auth required
 atlantic-council-africa,Atlantic Council Africa Center,think-tank,usa,no,https://www.atlanticcouncil.org/programs/africa-center,https://www.atlanticcouncil.org/about/careers,,,@ACAfricaCenter,,,yes,no,yes,high,no,
-crisis-group,International Crisis Group,think-tank,global,no,https://www.crisisgroup.org,https://www.crisisgroup.org/careers,https://www.crisisgroup.org/careers/internships,,@CrisisGroup,,,yes,sometimes,yes,critical,no,"Nairobi Horn of Africa office is key"
+crisis-group,International Crisis Group,think-tank,global,no,https://www.crisisgroup.org,https://www.crisisgroup.org/careers,https://www.crisisgroup.org/careers/internships,,@CrisisGroup,,,yes,sometimes,yes,critical,no,Nairobi Horn of Africa office is key
 iiss,International Institute for Strategic Studies,think-tank,uk,no,https://www.iiss.org,https://www.iiss.org/about-us/careers,,,@IISS_org,,,yes,no,sometimes,low,no,
 rusi,Royal United Services Institute,think-tank,uk,no,https://rusi.org,https://rusi.org/about/careers,,,@RUSI_org,,,yes,no,sometimes,low,no,
 gmf,German Marshall Fund,think-tank,usa,no,https://www.gmfus.org,https://www.gmfus.org/careers,,,@gmfus,,,yes,no,yes,low,no,
@@ -69,56 +69,56 @@ sipri,Stockholm International Peace Research Institute,think-tank,europe,no,http
 nupi,Norwegian Institute of International Affairs,think-tank,europe,no,https://www.nupi.no,https://www.nupi.no/en/about-nupi/vacancies,,,@nupinytt,,,yes,no,sometimes,low,no,
 diis,Danish Institute for International Studies,think-tank,europe,no,https://www.diis.dk,https://www.diis.dk/en/vacancies,,,@diisdk,,,yes,no,sometimes,low,no,
 fiia,Finnish Institute of International Affairs,think-tank,europe,no,https://www.fiia.fi,https://www.fiia.fi/en/career,,,@FIIA_fi,,,yes,no,sometimes,low,no,
-ecdpm,European Centre for Development Policy Management,think-tank,europe,no,https://ecdpm.org,https://ecdpm.org/work-with-us,,,@ecdpm,,,yes,sometimes,sometimes,medium,no,"Maastricht; very Africa-focused"
-iss-africa,Institute for Security Studies,think-tank,africa,yes,https://issafrica.org,https://issafrica.org/about-us/vacancies,,,@issafrica,,,yes,sometimes,sometimes,critical,no,"Pretoria HQ + Nairobi + Addis offices"
-saiia,South African Institute of International Affairs,think-tank,africa,no,https://saiia.org.za,https://saiia.org.za/work-with-us,https://saiia.org.za/youth-policy-portal,,@saiiavoices,,,yes,no,sometimes,high,no,"Johannesburg"
-accord,African Centre for the Constructive Resolution of Disputes,think-tank,africa,yes,https://www.accord.org.za,https://www.accord.org.za/career-opportunities,,,@ACCORD_online,,,yes,sometimes,sometimes,high,no,"Durban HQ + Addis liaison"
-amani-africa,Amani Africa Media and Research Services,think-tank,africa,yes,https://amaniafrica-et.org,,,info@amaniafrica-et.org,@AmaniAfricaET,,,no,no,no,critical,yes,"Cold-email; AU-focused policy research"
-ipss,Institute for Peace and Security Studies AAU,think-tank,africa,yes,https://ipss-addis.org,,,info@ipss-addis.org,@IPSS_Addis,,,no,no,no,critical,yes,"Cold-email; AU partner"
+ecdpm,European Centre for Development Policy Management,think-tank,europe,no,https://ecdpm.org,https://ecdpm.org/work-with-us,,,@ecdpm,,,yes,sometimes,sometimes,medium,no,Maastricht; very Africa-focused
+iss-africa,Institute for Security Studies,think-tank,africa,yes,https://issafrica.org,https://issafrica.org/about-us/vacancies,,,@issafrica,,,yes,sometimes,sometimes,critical,no,Pretoria HQ + Nairobi + Addis offices
+saiia,South African Institute of International Affairs,think-tank,africa,no,https://saiia.org.za,https://saiia.org.za/work-with-us/,,,@saiiavoices,,,yes,no,sometimes,high,no,Johannesburg
+accord,African Centre for the Constructive Resolution of Disputes,think-tank,africa,yes,https://www.accord.org.za,https://www.accord.org.za/career-opportunities,https://www.accord.org.za/about/internships/,,@ACCORD_online,,,yes,sometimes,sometimes,high,no,Durban HQ + Addis liaison
+amani-africa,Amani Africa Media and Research Services,think-tank,africa,yes,https://amaniafrica-et.org,,,info@amaniafrica-et.org,@AmaniAfricaET,,,no,no,no,critical,yes,Cold-email; AU-focused policy research
+ipss,Institute for Peace and Security Studies AAU,think-tank,africa,yes,https://ipss-addis.org,,,info@ipss-addis.org,@IPSS_Addis,,,no,no,no,critical,yes,Cold-email; AU partner
 inter-africa,Inter Africa Group,think-tank,africa,yes,https://iag.org.et,,,,,,,no,no,no,high,yes,
-lpi-horn,Life and Peace Institute Horn of Africa,think-tank,africa,yes,https://life-peace.org,https://life-peace.org/careers,,info@life-peace.org,@LPI_voices,,,sometimes,no,sometimes,high,no,"Conference call for abstracts; peace research"
-acss,Africa Center for Strategic Studies,think-tank,usa,no,https://africacenter.org,https://africacenter.org/about/careers,,,@AfricaACSS,,,yes,no,yes,medium,no,"DC; US gov funded"
+lpi-horn,Life and Peace Institute Horn of Africa,think-tank,africa,yes,https://life-peace.org,https://life-peace.org/work-with-us/,,info@life-peace.org,@LPI_voices,,,sometimes,no,sometimes,high,no,Conference call for abstracts; peace research
+acss,Africa Center for Strategic Studies,think-tank,usa,no,https://africacenter.org,https://africacenter.org/about/careers,,,@AfricaACSS,,,yes,no,yes,medium,no,DC; US gov funded
 cddghana,CDD-Ghana,think-tank,africa,no,https://cddgh.org,https://cddgh.org/careers,,,@CDDGhana,,,yes,sometimes,sometimes,low,yes,
-afrobarometer,Afrobarometer,think-tank,africa,no,https://www.afrobarometer.org,https://www.afrobarometer.org/careers,,,@afrobarometer,,,yes,sometimes,sometimes,medium,no,"Accra HQ"
-tana-forum,Tana High-Level Forum on Security in Africa,think-tank,africa,yes,https://tanaforum.org,,,info@tanaforum.org,@TanaForum,,,no,no,no,medium,yes,"Annual forum; cold contact"
+afrobarometer,Afrobarometer,think-tank,africa,no,https://www.afrobarometer.org,https://www.afrobarometer.org/careers,,,@afrobarometer,,,yes,sometimes,sometimes,medium,no,Accra HQ
+tana-forum,Tana High-Level Forum on Security in Africa,think-tank,africa,yes,https://tanaforum.org,,,info@tanaforum.org,@TanaForum,,,no,no,no,medium,yes,Annual forum; cold contact
 mo-ibrahim,Mo Ibrahim Foundation,foundation,uk,no,https://mo.ibrahim.foundation,https://mo.ibrahim.foundation/work-with-us,,,@Mo_IbrahimFdn,,,yes,sometimes,yes,medium,no,
-acet,Africa Center for Economic Transformation,think-tank,africa,no,https://acetforafrica.org,https://acetforafrica.org/careers,,,@AcetforAfrica,,,yes,sometimes,sometimes,low,no,"Accra"
-ijr,Institute for Justice and Reconciliation,think-tank,africa,no,https://www.ijr.org.za,https://www.ijr.org.za/about/careers,,,@_IJR_,,,yes,no,sometimes,low,no,"Cape Town"
+acet,Africa Center for Economic Transformation,think-tank,africa,no,https://acetforafrica.org,https://acetforafrica.org/careers,,,@AcetforAfrica,,,yes,sometimes,sometimes,low,no,Accra
+ijr,Institute for Justice and Reconciliation,think-tank,africa,no,https://www.ijr.org.za,https://www.ijr.org.za/about/careers,,,@_IJR_,,,yes,no,sometimes,low,no,Cape Town
 ccr-cape-town,Centre for Conflict Resolution,think-tank,africa,no,https://www.ccr.org.za,,,info@ccr.org.za,@CCRCapeTown,,,sometimes,no,sometimes,low,yes,
-ossrea,Organization for Social Science Research in Eastern and Southern Africa,academic,africa,yes,https://www.ossrea.net,https://www.ossrea.net/vacancies,,info@ossrea.net,,,,yes,no,sometimes,medium,no,"Headquartered in Addis"
-codesria,Council for the Development of Social Science Research in Africa,academic,africa,no,https://codesria.org,https://codesria.org/spip.php?rubrique92,,,@CODESRIA,,,yes,no,sometimes,medium,no,"Dakar"
-aerc,African Economic Research Consortium,academic,africa,no,https://aercafrica.org,https://aercafrica.org/careers,,,@aercafrica,,,yes,no,sometimes,low,no,"Nairobi"
-amnesty,Amnesty International,human-rights,global,no,https://www.amnesty.org,https://careers.amnesty.org,https://www.amnesty.org/en/careers,,@amnesty,,,yes,sometimes,yes,critical,no,"No Ethiopia office; East Africa Regional in Nairobi"
-hrw,Human Rights Watch,human-rights,global,no,https://www.hrw.org,https://www.hrw.org/careers,https://www.hrw.org/internships,,@hrw,,,yes,sometimes,yes,critical,no,"NY HQ + Nairobi regional"
-front-line-defenders,Front Line Defenders,human-rights,europe,no,https://www.frontlinedefenders.org,https://www.frontlinedefenders.org/en/jobs-tenders,,,@FrontLineHRD,,,yes,no,sometimes,medium,no,"Dublin"
-fidh,International Federation for Human Rights,human-rights,europe,no,https://www.fidh.org,https://www.fidh.org/en/jobs,,,@fidh_en,,,yes,no,sometimes,medium,no,"Paris"
-civicus,CIVICUS,human-rights,africa,no,https://www.civicus.org,https://www.civicus.org/index.php/careers,https://www.civicus.org/index.php/internships,,@CIVICUSalliance,,,yes,yes,sometimes,high,no,"Johannesburg; remote stipend internships"
-crd,Civil Rights Defenders,human-rights,europe,no,https://crd.org,https://crd.org/career,,,@CRDefenders,,,yes,sometimes,sometimes,medium,no,"Stockholm; funds EHRCO/CARD/EHRDC"
-article19,Article 19,human-rights,global,no,https://www.article19.org,https://www.article19.org/about/work-with-us,,,@article19org,,,yes,sometimes,sometimes,low,no,"London"
-rsf,Reporters Without Borders,human-rights,europe,no,https://rsf.org,https://rsf.org/en/jobs,,,@RSF_inter,,,yes,no,sometimes,low,no,"Paris"
-cpj,Committee to Protect Journalists,human-rights,usa,no,https://cpj.org,https://cpj.org/careers,,,@pressfreedom,,,yes,no,yes,low,no,"NY"
-freedom-house,Freedom House,human-rights,usa,no,https://freedomhouse.org,https://freedomhouse.org/careers,https://freedomhouse.org/careers/internships,,@FreedomHouse,,,yes,sometimes,yes,high,no,"DC; funds CARD's NGHRD project"
-ishr,International Service for Human Rights,human-rights,europe,no,https://ishr.ch,https://ishr.ch/about-us/jobs,,,@ISHRglobal,,,yes,no,sometimes,low,no,"Geneva"
-defend-defenders,DefendDefenders East and Horn of Africa HRD Project,human-rights,africa,no,https://defenddefenders.org,https://defenddefenders.org/jobs,,,@DefendDefenders,,,yes,sometimes,sometimes,high,no,"Kampala; covers Ethiopia"
-osf,Open Society Foundations,foundation,global,no,https://www.opensocietyfoundations.org,https://www.opensocietyfoundations.org/jobs,https://www.opensocietyfoundations.org/jobs/internships,,@OpenSociety,,,yes,sometimes,yes,high,no,"NY HQ + Africa office Joburg + AU liaison Addis"
+ossrea,Organization for Social Science Research in Eastern and Southern Africa,academic,africa,yes,https://www.ossrea.net,https://www.ossrea.net/vacancies,,info@ossrea.net,,,,yes,no,sometimes,medium,no,Headquartered in Addis
+codesria,Council for the Development of Social Science Research in Africa,academic,africa,no,https://codesria.org,https://codesria.org/spip.php?rubrique92,,,@CODESRIA,,,yes,no,sometimes,medium,no,Dakar
+aerc,African Economic Research Consortium,academic,africa,no,https://aercafrica.org,https://aercafrica.org/careers,,,@aercafrica,,,yes,no,sometimes,low,no,Nairobi
+amnesty,Amnesty International,human-rights,global,no,https://www.amnesty.org,https://careers.amnesty.org,https://www.amnesty.org/en/careers,,@amnesty,,,yes,sometimes,yes,critical,no,No Ethiopia office; East Africa Regional in Nairobi
+hrw,Human Rights Watch,human-rights,global,no,https://www.hrw.org,https://job-boards.greenhouse.io/humanrightswatch,,,@hrw,,,yes,sometimes,yes,critical,no,NY HQ + Nairobi regional
+front-line-defenders,Front Line Defenders,human-rights,europe,no,https://www.frontlinedefenders.org,https://www.frontlinedefenders.org/en/jobs-tenders,,,@FrontLineHRD,,,yes,no,sometimes,medium,no,Dublin
+fidh,International Federation for Human Rights,human-rights,europe,no,https://www.fidh.org,https://www.fidh.org/en/jobs,,,@fidh_en,,,yes,no,sometimes,medium,no,Paris
+civicus,CIVICUS,human-rights,africa,no,https://www.civicus.org,https://www.civicus.org/index.php/involved/work-with-us,,,@CIVICUSalliance,,,yes,yes,sometimes,high,no,Johannesburg; remote stipend internships
+crd,Civil Rights Defenders,human-rights,europe,no,https://crd.org,https://crd.org/career,,,@CRDefenders,,,yes,sometimes,sometimes,medium,no,Stockholm; funds EHRCO/CARD/EHRDC
+article19,Article 19,human-rights,global,no,https://www.article19.org,https://www.article19.org/about/work-with-us,,,@article19org,,,yes,sometimes,sometimes,low,no,London
+rsf,Reporters Without Borders,human-rights,europe,no,https://rsf.org,https://rsf.org/en/jobs,,,@RSF_inter,,,yes,no,sometimes,low,no,Paris
+cpj,Committee to Protect Journalists,human-rights,usa,no,https://cpj.org,https://cpj.org/careers,,,@pressfreedom,,,yes,no,yes,low,no,NY
+freedom-house,Freedom House,human-rights,usa,no,https://freedomhouse.org,https://freedomhouse.org/careers,,,@FreedomHouse,,,yes,sometimes,yes,high,no,DC; funds CARD's NGHRD project
+ishr,International Service for Human Rights,human-rights,europe,no,https://ishr.ch,https://ishr.ch/about-us/jobs,,,@ISHRglobal,,,yes,no,sometimes,low,no,Geneva
+defend-defenders,DefendDefenders East and Horn of Africa HRD Project,human-rights,africa,no,https://defenddefenders.org,https://defenddefenders.org/jobs,,,@DefendDefenders,,,yes,sometimes,sometimes,high,no,Kampala; covers Ethiopia
+osf,Open Society Foundations,foundation,global,no,https://www.opensocietyfoundations.org,https://osfglobal.wd5.myworkdayjobs.com/OSF,,,@OpenSociety,,,yes,sometimes,yes,high,no,NY HQ + Africa office Joburg + AU liaison Addis
 osf-africa,Open Society Africa,foundation,africa,yes,https://www.opensocietyfoundations.org/who-we-are/programs/open-society-africa,,,,,,,yes,sometimes,yes,high,yes,
 ford-foundation,Ford Foundation,foundation,usa,no,https://www.fordfoundation.org,https://www.fordfoundation.org/about/career-opportunities,,,@FordFoundation,,,yes,no,yes,medium,no,
 macarthur,MacArthur Foundation,foundation,usa,no,https://www.macfound.org,https://www.macfound.org/about/careers,,,@macfound,,,yes,no,yes,low,no,
-ehrco,Ethiopian Human Rights Council,human-rights,ethiopia,yes,https://ehrco.org,,,info@ehrco.org,,,https://t.me/ehrco,sometimes,no,sometimes,critical,no,"Oldest local HR NGO; ACSO suspension caveat"
-card,Center for Advancement of Rights and Democracy,human-rights,ethiopia,yes,https://www.cardeth.org,https://www.cardeth.org/job-vacancies,https://www.cardeth.org/internship,,@CARDEthiopia,https://www.linkedin.com/company/cardethiopia,,yes,sometimes,yes,critical,no,"Active intern program; NGHRD project"
-ehrdc,Ethiopian Human Rights Defenders Center,human-rights,ethiopia,yes,https://ethdefenders.org,https://ethdefenders.org/category/jobopenings-vacancy,,EHRDcenter@ethdefenders.org,,https://www.linkedin.com/company/ehrdc,,yes,no,sometimes,critical,no,"University HR Clubs; ACSO suspension caveat"
-cehro,Consortium of Ethiopian Human Rights Organizations,human-rights,ethiopia,yes,https://cehro.org,https://cehro.org/vacancy,,cehrojob@gmail.com,,,,sometimes,no,sometimes,high,no,"Usually senior; cold-email for research assist"
-ehre,Association for Human Rights in Ethiopia,human-rights,ethiopia,yes,,,,,,,,unknown,no,no,low,yes,"Status unclear; may be absorbed into EHRDC network"
-ehrc,Ethiopian Human Rights Commission,human-rights,ethiopia,yes,https://ehrc.org,https://ehrc.org/category/vacancies,,,@EthioHRC,,,yes,no,yes,critical,no,"Quasi-governmental; serious HR work"
-setaweet,Setaweet Movement,human-rights,ethiopia,yes,https://setaweet.com,,,info@setaweet.com,@SetaweetMov,,,no,no,no,medium,yes,"Feminist movement"
+ehrco,Ethiopian Human Rights Council,human-rights,ethiopia,yes,https://ehrco.org,,,info@ehrco.org,,,https://t.me/ehrco,sometimes,no,sometimes,critical,no,Oldest local HR NGO; ACSO suspension caveat
+card,Center for Advancement of Rights and Democracy,human-rights,ethiopia,yes,https://www.cardeth.org,https://www.cardeth.org/careers-and-opportunities,,,@CARDEthiopia,https://www.linkedin.com/company/cardethiopia,,yes,sometimes,yes,critical,no,Active intern program; NGHRD project
+ehrdc,Ethiopian Human Rights Defenders Center,human-rights,ethiopia,yes,https://ethdefenders.org,https://ethdefenders.org/category/jobopenings-vacancy,,EHRDcenter@ethdefenders.org,,https://www.linkedin.com/company/ehrdc,,yes,no,sometimes,critical,no,University HR Clubs; ACSO suspension caveat
+cehro,Consortium of Ethiopian Human Rights Organizations,human-rights,ethiopia,yes,https://cehro.org,https://cehro.org/vacancy,,cehrojob@gmail.com,,,,sometimes,no,sometimes,high,no,Usually senior; cold-email for research assist
+ehre,Association for Human Rights in Ethiopia,human-rights,ethiopia,yes,,,,,,,,unknown,no,no,low,yes,Status unclear; may be absorbed into EHRDC network
+ehrc,Ethiopian Human Rights Commission,human-rights,ethiopia,yes,https://ehrc.org,https://hris.ehrc.org/Vacancies/Index,,,@EthioHRC,,,yes,no,yes,critical,no,Quasi-governmental; serious HR work
+setaweet,Setaweet Movement,human-rights,ethiopia,yes,https://setaweet.com,,,info@setaweet.com,@SetaweetMov,,,no,no,no,medium,yes,Feminist movement
 siha,Strategic Initiative for Women in the Horn of Africa,human-rights,africa,yes,https://sihanet.org,https://sihanet.org/careers,,,@SIHANetwork,,,yes,sometimes,sometimes,high,no,
-yellow-movement-aau,Yellow Movement AAU,human-rights,ethiopia,yes,,,,,@YellowMvmt,,,no,no,no,low,yes,"Student movement at AAU"
-cecoe,Coalition of Ethiopian Civil Society Organizations for Elections,election,ethiopia,yes,,,,info@cecoe.org,,,,sometimes,no,sometimes,critical,yes,"Election cycle data clerk + observer roles"
-nebe,National Election Board of Ethiopia,election,ethiopia,yes,https://nebe.org.et,https://nebe.org.et/en/vacancies,,,@NEBEthiopia,,,yes,no,yes,critical,no,"June 2026 General Elections"
-international-idea,International IDEA,election,global,yes,https://www.idea.int,https://www.idea.int/careers,https://www.idea.int/internships,,@Int_IDEA,,,yes,sometimes,yes,high,no,"Stockholm HQ + Addis Africa office"
+yellow-movement-aau,Yellow Movement AAU,human-rights,ethiopia,yes,,,,,@YellowMvmt,,,no,no,no,low,yes,Student movement at AAU
+cecoe,Coalition of Ethiopian Civil Society Organizations for Elections,election,ethiopia,yes,,,,info@cecoe.org,,,,sometimes,no,sometimes,critical,yes,Election cycle data clerk + observer roles
+nebe,National Election Board of Ethiopia,election,ethiopia,yes,https://nebe.org.et,https://nebe.org.et/en/announcments?field_type_value=Vacancy,,,@NEBEthiopia,,,yes,no,yes,critical,no,June 2026 General Elections
+international-idea,International IDEA,election,global,yes,https://www.idea.int,https://careers.idea.int/jobs,,,@Int_IDEA,,,yes,sometimes,yes,high,no,Stockholm HQ + Addis Africa office
 ifes,International Foundation for Electoral Systems,election,usa,no,https://www.ifes.org,https://www.ifes.org/careers,https://www.ifes.org/internships,,@IFES1987,,,yes,sometimes,yes,medium,no,
-eisa,Electoral Institute for Sustainable Democracy in Africa,election,africa,no,https://www.eisa.org,https://www.eisa.org/about-us/careers,,,@EISA_news,,,yes,sometimes,sometimes,medium,no,"Johannesburg + field offices"
-carter-center,Carter Center,election,usa,no,https://www.cartercenter.org,https://www.cartercenter.org/about/jobs,https://www.cartercenter.org/about/jobs/internships.html,,@CarterCenter,,,yes,no,yes,medium,no,"US auth required for HQ; field missions hire locals"
+eisa,Electoral Institute for Sustainable Democracy in Africa,election,africa,no,https://www.eisa.org,https://www.eisa.org/about-us/careers,,,@EISA_news,,,yes,sometimes,sometimes,medium,no,Johannesburg + field offices
+carter-center,Carter Center,election,usa,no,https://www.cartercenter.org,https://www.cartercenter.org/about/jobs,https://www.cartercenter.org/about/jobs/internships.html,,@CarterCenter,,,yes,no,yes,medium,no,US auth required for HQ; field missions hire locals
 ndi,National Democratic Institute,election,usa,no,https://www.ndi.org,https://www.ndi.org/careers,https://www.ndi.org/internships,,@NDI,,,yes,sometimes,yes,medium,no,
 iri,International Republican Institute,election,usa,no,https://www.iri.org,https://www.iri.org/careers,,,@IRIglobal,,,yes,sometimes,yes,medium,no,
 ned,National Endowment for Democracy,election,usa,no,https://www.ned.org,https://www.ned.org/about/career-opportunities,https://www.ned.org/fellowships,,@NEDemocracy,,,yes,no,yes,medium,no,
@@ -139,21 +139,21 @@ actionaid,ActionAid Ethiopia,ingo,ethiopia,yes,https://ethiopia.actionaid.org,ht
 pact,Pact Ethiopia,ingo,ethiopia,yes,https://www.pactworld.org/country/ethiopia,https://www.pactworld.org/careers,,,@PactWorld,,,yes,no,sometimes,low,no,
 psi,Population Services International,ingo,ethiopia,yes,https://www.psi.org/country/ethiopia,https://www.psi.org/careers,,,@PSIimpact,,,yes,no,sometimes,low,no,
 mpi,Migration Policy Institute,migration,usa,no,https://www.migrationpolicy.org,https://www.migrationpolicy.org/about/jobs,,,@MigrationPolicy,,,yes,sometimes,yes,medium,no,
-mixed-migration,Mixed Migration Centre,migration,europe,no,https://mixedmigration.org,https://mixedmigration.org/about/careers,,,@Mixed_Migration,,,yes,no,sometimes,medium,no,"Geneva HQ + Nairobi East Africa"
+mixed-migration,Mixed Migration Centre,migration,europe,no,https://mixedmigration.org,https://mixedmigration.org/about/careers,,,@Mixed_Migration,,,yes,no,sometimes,medium,no,Geneva HQ + Nairobi East Africa
 refugees-international,Refugees International,migration,usa,no,https://www.refugeesinternational.org,https://www.refugeesinternational.org/careers,https://www.refugeesinternational.org/internships,,@RefugeesIntl,,,yes,sometimes,yes,medium,no,
 jrs,Jesuit Refugee Service,migration,global,no,https://jrs.net,https://jrs.net/en/work-with-us,,,@JesuitRefugee,,,yes,sometimes,sometimes,low,no,
 search-common-ground,Search for Common Ground,peace,global,no,https://www.sfcg.org,https://www.sfcg.org/work-with-us,,,@SFCG_,,,yes,sometimes,yes,medium,no,
 saferworld,Saferworld,peace,uk,no,https://www.saferworld.org.uk,https://www.saferworld.org.uk/about/work-with-us,,,@Saferworld,,,yes,sometimes,sometimes,medium,no,
 conciliation-resources,Conciliation Resources,peace,uk,no,https://www.c-r.org,https://www.c-r.org/about-us/work-us,,,@CRbuildpeace,,,yes,sometimes,sometimes,low,no,
-interpeace,Interpeace,peace,europe,no,https://www.interpeace.org,https://www.interpeace.org/career-opportunities,,,@InterpeaceTweet,,,yes,sometimes,sometimes,medium,no,"Geneva + Nairobi Africa office"
+interpeace,Interpeace,peace,europe,no,https://www.interpeace.org,https://www.interpeace.org/career-opportunities,,,@InterpeaceTweet,,,yes,sometimes,sometimes,medium,no,Geneva + Nairobi Africa office
 berghof,Berghof Foundation,peace,europe,no,https://berghof-foundation.org,https://berghof-foundation.org/about/jobs,,,@BerghofFnd,,,yes,no,sometimes,low,no,
-hd-centre,Centre for Humanitarian Dialogue,peace,europe,no,https://www.hdcentre.org,https://www.hdcentre.org/work-with-us,,,@hdcentre,,,yes,no,sometimes,medium,no,"Geneva"
+hd-centre,Centre for Humanitarian Dialogue,peace,europe,no,https://www.hdcentre.org,https://www.hdcentre.org/work-with-us,,,@hdcentre,,,yes,no,sometimes,medium,no,Geneva
 folke-bernadotte,Folke Bernadotte Academy,peace,europe,no,https://fba.se,https://fba.se/en/about-fba/work-at-fba,,,@FBAFolke,,,yes,no,sometimes,low,no,
 cmi,Crisis Management Initiative,peace,europe,no,https://cmi.fi,https://cmi.fi/about-cmi/work-with-us,,,@CMI_intl,,,yes,no,sometimes,low,no,
 usip,US Institute of Peace,peace,usa,no,https://www.usip.org,https://www.usip.org/careers,https://www.usip.org/about/jobs/internships,,@USIP,,,yes,no,yes,medium,no,
 gcsp,Geneva Centre for Security Policy,peace,europe,no,https://www.gcsp.ch,https://www.gcsp.ch/about-us/careers,,,@TheGCSP,,,yes,no,sometimes,low,no,
 kofi-annan-foundation,Kofi Annan Foundation,peace,europe,no,https://www.kofiannanfoundation.org,https://www.kofiannanfoundation.org/career,,,@KofiAnnanFdn,,,yes,no,sometimes,medium,no,
-ti,Transparency International,governance,global,no,https://www.transparency.org,https://www.transparency.org/en/jobs,,,@anticorruption,,,yes,sometimes,sometimes,medium,no,"Berlin HQ"
+ti,Transparency International,governance,global,no,https://www.transparency.org,https://www.transparency.org/en/jobs,,,@anticorruption,,,yes,sometimes,sometimes,medium,no,Berlin HQ
 ti-ethiopia,Transparency Ethiopia,governance,ethiopia,yes,https://transparencyethiopia.org,,,info@transparencyethiopia.org,,,,sometimes,no,sometimes,medium,yes,
 global-integrity,Global Integrity,governance,usa,no,https://www.globalintegrity.org,https://www.globalintegrity.org/about/careers,,,@GlobalIntegrity,,,yes,sometimes,sometimes,low,no,
 ogp,Open Government Partnership,governance,global,no,https://www.opengovpartnership.org,https://www.opengovpartnership.org/careers,,,@opengovpart,,,yes,sometimes,sometimes,medium,no,
@@ -177,24 +177,24 @@ uk-embassy-ethiopia,UK Embassy Addis Ababa,embassy,uk,yes,https://www.gov.uk/wor
 german-embassy-ethiopia,German Embassy Addis Ababa,embassy,germany,yes,https://addis-abeba.diplo.de,https://addis-abeba.diplo.de/et-en/service/-/2530820,,,,,,yes,no,sometimes,medium,no,
 french-embassy-ethiopia,French Embassy Addis Ababa,embassy,france,yes,https://et.ambafrance.org,,,communication.addis-abeba-amba@diplomatie.gouv.fr,@FranceEnEthiop1,,,sometimes,no,sometimes,medium,yes,
 dutch-embassy-ethiopia,Dutch Embassy Addis Ababa,embassy,netherlands,yes,https://www.netherlandsworldwide.nl/countries/ethiopia,,,add@minbuza.nl,@NLinEthiopia,,,sometimes,no,sometimes,medium,yes,
-danish-embassy-ethiopia,Danish Embassy Addis Ababa,embassy,denmark,yes,https://etiopien.um.dk,https://etiopien.um.dk/en/about-us/internship,,addamb@um.dk,@DKAddisAbaba,,,yes,no,sometimes,high,no,"Confirmed running intern program"
+danish-embassy-ethiopia,Danish Embassy Addis Ababa,embassy,denmark,yes,https://etiopien.um.dk,https://etiopien.um.dk/en/about-us/internship,,addamb@um.dk,@DKAddisAbaba,,,yes,no,sometimes,high,no,Confirmed running intern program
 swedish-embassy-ethiopia,Swedish Embassy Addis Ababa,embassy,sweden,yes,https://www.swedenabroad.se/en/embassies/ethiopia-addis-ababa,,,ambassaden.addisabeba@gov.se,,,,sometimes,no,sometimes,medium,yes,
 norwegian-embassy-ethiopia,Norwegian Embassy Addis Ababa,embassy,norway,yes,https://www.norway.no/en/ethiopia,,,emb.addisababa@mfa.no,,,,sometimes,no,sometimes,medium,yes,
 finnish-embassy-ethiopia,Finnish Embassy Addis Ababa,embassy,finland,yes,https://finlandabroad.fi/web/eth,,,sanomat.add@formin.fi,,,,sometimes,no,sometimes,medium,yes,
 irish-embassy-ethiopia,Irish Embassy Addis Ababa,embassy,ireland,yes,https://www.ireland.ie/en/ethiopia,,,addisababaembassy@dfa.ie,,,,sometimes,no,sometimes,medium,yes,
 italian-embassy-ethiopia,Italian Embassy Addis Ababa,embassy,italy,yes,https://ambaddisabeba.esteri.it,,,segreteria.addisabeba@esteri.it,,,,sometimes,no,sometimes,medium,yes,
-eu-delegation-au,EU Delegation to the African Union,embassy,europe,yes,https://www.eeas.europa.eu/delegations/african-union,https://www.eeas.europa.eu/eeas/work-us_en,,,@EUtoAU,,,yes,no,yes,critical,no,"Traineeship 700 euro/month; Master's required"
+eu-delegation-au,EU Delegation to the African Union,embassy,europe,yes,https://www.eeas.europa.eu/delegations/african-union,https://www.eeas.europa.eu/eeas/work-us_en,,,@EUtoAU,,,yes,no,yes,critical,no,Traineeship 700 euro/month; Master's required
 eu-delegation-ethiopia,EU Delegation to Ethiopia,embassy,europe,yes,https://www.eeas.europa.eu/delegations/ethiopia,https://www.eeas.europa.eu/eeas/work-us_en,,,@EUinEthiopia,,,yes,no,yes,high,no,
 japanese-embassy-ethiopia,Japanese Embassy Addis Ababa,embassy,japan,yes,https://www.et.emb-japan.go.jp,,,,@JapanEmbAddis,,,sometimes,no,sometimes,low,yes,
 korean-embassy-ethiopia,Korean Embassy Addis Ababa,embassy,korea,yes,https://overseas.mofa.go.kr/et-en/index.do,,,,,,,sometimes,no,sometimes,low,yes,
 canadian-embassy-ethiopia,Canadian Embassy Addis Ababa,embassy,canada,yes,https://www.international.gc.ca/country-pays/ethiopia-ethiopie,,,addis@international.gc.ca,@CanadainEth,,,sometimes,no,sometimes,low,yes,
 mfa-ethiopia,Ministry of Foreign Affairs Ethiopia,gov,ethiopia,yes,https://mfa.gov.et,https://mfa.gov.et/vacancies,,,@mfaethiopia,,,yes,no,yes,critical,no,
-ifa,Institute of Foreign Affairs,gov,ethiopia,yes,https://ifa.org.et,,,info@ifa.org.et,,,,sometimes,no,sometimes,critical,yes,"MFA-affiliated think tank"
+ifa,Institute of Foreign Affairs,gov,ethiopia,yes,https://ifa.org.et,,,info@ifa.org.et,,,,sometimes,no,sometimes,critical,yes,MFA-affiliated think tank
 moj-ethiopia,Ministry of Justice Ethiopia,gov,ethiopia,yes,https://moj.gov.et,https://moj.gov.et/vacancies,,,,,,yes,no,yes,medium,no,
-ministry-peace,Ministry of Peace Ethiopia,gov,ethiopia,yes,,,,,,,,sometimes,no,sometimes,high,yes,"Verify current status; merged/renamed in some restructurings"
+ministry-peace,Ministry of Peace Ethiopia,gov,ethiopia,yes,,,,,,,,sometimes,no,sometimes,high,yes,Verify current status; merged/renamed in some restructurings
 ministry-women,Ministry of Women and Social Affairs,gov,ethiopia,yes,https://mowsa.gov.et,,,,,,,sometimes,no,sometimes,medium,yes,
 ethiopian-institute-peace,Ethiopian Institute for Peace,gov,ethiopia,yes,,,,,,,,sometimes,no,sometimes,high,yes,
-hopr,House of Peoples' Representatives,gov,ethiopia,yes,https://www.hopr.gov.et,,,,,,,sometimes,no,sometimes,medium,yes,"Research wing"
+hopr,House of Peoples' Representatives,gov,ethiopia,yes,https://www.hopr.gov.et,,,,,,,sometimes,no,sometimes,medium,yes,Research wing
 hof,House of Federation,gov,ethiopia,yes,https://hofethiopia.org,,,,,,,sometimes,no,sometimes,low,yes,
 acso,Authority for Civil Society Organizations,gov,ethiopia,yes,https://acso.gov.et,,,,,,,sometimes,no,sometimes,low,yes,
 oecd,Organisation for Economic Co-operation and Development,multilateral,europe,no,https://www.oecd.org,https://www.oecd.org/careers,https://www.oecd.org/careers/internship-programme,,@OECD,,,yes,no,yes,medium,no,
@@ -204,12 +204,12 @@ wto,World Trade Organization,multilateral,europe,no,https://www.wto.org,https://
 itc,International Trade Centre,multilateral,europe,no,https://www.intracen.org,https://www.intracen.org/about/work-with-itc,,,@ITCnews,,,yes,sometimes,sometimes,low,no,
 commonwealth-sec,Commonwealth Secretariat,multilateral,uk,no,https://thecommonwealth.org,https://thecommonwealth.org/careers,,,@commonwealthsec,,,yes,sometimes,sometimes,low,no,
 oif,Organisation Internationale de la Francophonie,multilateral,france,no,https://www.francophonie.org,https://www.francophonie.org/recrutement,,,@OIFfrancophonie,,,yes,no,sometimes,low,no,
-femnet,African Women's Development and Communication Network,gender,africa,no,https://femnet.org,https://femnet.org/careers,,,@femnetprog,,,yes,sometimes,sometimes,medium,no,"Nairobi"
+femnet,African Women's Development and Communication Network,gender,africa,no,https://femnet.org,https://femnet.org/careers,,,@femnetprog,,,yes,sometimes,sometimes,medium,no,Nairobi
 awid,Association for Women's Rights in Development,gender,global,no,https://www.awid.org,https://www.awid.org/careers,,,@awid,,,yes,sometimes,sometimes,medium,no,
-awdf,African Women's Development Fund,gender,africa,no,https://awdf.org,https://awdf.org/careers,,,@awdf01,,,yes,no,sometimes,low,no,"Accra"
+awdf,African Women's Development Fund,gender,africa,no,https://awdf.org,https://awdf.org/careers,,,@awdf01,,,yes,no,sometimes,low,no,Accra
 mama-cash,Mama Cash,gender,europe,no,https://www.mamacash.org,https://www.mamacash.org/en/jobs,,,@mamacash,,,yes,no,sometimes,low,no,
 equality-now,Equality Now,gender,global,no,https://www.equalitynow.org,https://www.equalitynow.org/careers,,,@equalitynow,,,yes,sometimes,sometimes,low,no,
-sei,Stockholm Environment Institute,climate,europe,no,https://www.sei.org,https://www.sei.org/about-sei/jobs,,,@SEIresearch,,,yes,sometimes,sometimes,low,no,"Nairobi Africa Centre"
+sei,Stockholm Environment Institute,climate,europe,no,https://www.sei.org,https://www.sei.org/about-sei/jobs,,,@SEIresearch,,,yes,sometimes,sometimes,low,no,Nairobi Africa Centre
 wri-africa,World Resources Institute Africa,climate,africa,no,https://www.wri.org/our-work/topics/africa,https://www.wri.org/careers,,,@WorldResources,,,yes,sometimes,sometimes,medium,no,
 iisd,International Institute for Sustainable Development,climate,canada,no,https://www.iisd.org,https://www.iisd.org/about-iisd/work-iisd,,,@IISD_news,,,yes,sometimes,sometimes,low,no,
 african-climate-foundation,African Climate Foundation,climate,africa,no,https://africanclimatefoundation.org,https://africanclimatefoundation.org/careers,,,@AfricanClimateF,,,yes,sometimes,sometimes,medium,no,
@@ -217,16 +217,38 @@ internews,Internews,media,global,no,https://internews.org,https://internews.org/
 bbc-media-action,BBC Media Action,media,uk,no,https://www.bbc.co.uk/mediaaction,https://www.bbc.co.uk/mediaaction/work-with-us,,,@BBCMediaAction,,,yes,sometimes,sometimes,low,no,
 irex,IREX,media,usa,no,https://www.irex.org,https://www.irex.org/careers,https://www.irex.org/internships,,@IREXintl,,,yes,sometimes,yes,medium,no,
 access-now,Access Now,digital-rights,global,no,https://www.accessnow.org,https://www.accessnow.org/about-us/jobs,,,@accessnow,,,yes,sometimes,sometimes,medium,no,
-cipesa,Collaboration on International ICT Policy for East and Southern Africa,digital-rights,africa,no,https://cipesa.org,https://cipesa.org/about/job-opportunities,,,@cipesaug,,,yes,sometimes,sometimes,medium,no,"Kampala"
-paradigm-initiative,Paradigm Initiative,digital-rights,africa,no,https://paradigmhq.org,https://paradigmhq.org/careers,,,@ParadigmHQ,,,yes,sometimes,sometimes,low,no,"Nigeria; covers Africa"
+cipesa,Collaboration on International ICT Policy for East and Southern Africa,digital-rights,africa,no,https://cipesa.org,https://cipesa.org/about/job-opportunities,,,@cipesaug,,,yes,sometimes,sometimes,medium,no,Kampala
+paradigm-initiative,Paradigm Initiative,digital-rights,africa,no,https://paradigmhq.org,https://paradigmhq.org/careers,,,@ParadigmHQ,,,yes,sometimes,sometimes,low,no,Nigeria; covers Africa
 gates-foundation,Bill and Melinda Gates Foundation,foundation,usa,yes,https://www.gatesfoundation.org,https://www.gatesfoundation.org/about/careers,https://www.gatesfoundation.org/about/careers/internships,,@gatesfoundation,,,yes,no,yes,medium,no,
-mastercard-foundation,MasterCard Foundation,foundation,canada,no,https://mastercardfdn.org,https://mastercardfdn.org/careers,,,@MastercardFdn,,,yes,sometimes,yes,high,no,"Heavy Africa focus"
+mastercard-foundation,MasterCard Foundation,foundation,canada,no,https://mastercardfdn.org,https://mastercardfoundation.wd10.myworkdayjobs.com/mastercardfdn,,,@MastercardFdn,,,yes,sometimes,yes,high,no,Heavy Africa focus
 tony-elumelu,Tony Elumelu Foundation,foundation,africa,no,https://www.tonyelumelufoundation.org,https://www.tonyelumelufoundation.org/careers,,,@TonyElumeluFDN,,,yes,sometimes,sometimes,low,no,
 ned,National Endowment for Democracy,democracy,usa,no,https://www.ned.org,https://www.ned.org/about/career-opportunities,https://www.ned.org/fellowships,,@NEDemocracy,,,yes,no,yes,medium,no,
-reliefweb,ReliefWeb job board,aggregator,global,no,https://reliefweb.int/jobs,https://reliefweb.int/jobs,,,@reliefweb,,,yes,yes,yes,high,no,"Aggregator; scrape for Ethiopia + Internship filter"
-devex,Devex job board,aggregator,global,no,https://www.devex.com,https://www.devex.com/jobs,,,@devex,,,yes,yes,yes,high,no,"Aggregator"
-ethiongojobs,EthioNGOJobs,aggregator,ethiopia,yes,https://www.ethiongojobs.com,https://www.ethiongojobs.com/?s=internship,,,,,,yes,yes,yes,critical,no,"Primary v1 scrape source"
-un-careers,UN Careers portal,aggregator,global,no,https://careers.un.org,https://careers.un.org,,,,,,yes,yes,sometimes,critical,no,"Filter Ethiopia + Internship"
-ethiojobs,Ethiojobs,aggregator,ethiopia,yes,https://www.ethiojobs.net,https://www.ethiojobs.net,,,,,,yes,no,sometimes,medium,no,"General; less filtering"
+reliefweb,ReliefWeb job board,aggregator,global,no,https://reliefweb.int/jobs,https://reliefweb.int/jobs,,,@reliefweb,,,yes,yes,yes,high,no,Aggregator; scrape for Ethiopia + Internship filter
+devex,Devex job board,aggregator,global,no,https://www.devex.com,https://www.devex.com/jobs,,,@devex,,,yes,yes,yes,high,no,Aggregator
+ethiongojobs,EthioNGOJobs,aggregator,ethiopia,yes,https://www.ethiongojobs.com,https://www.ethiongojobs.com/?s=internship,,,,,,yes,yes,yes,critical,no,Primary v1 scrape source
+un-careers,UN Careers portal,aggregator,global,no,https://careers.un.org,https://careers.un.org,,,,,,yes,yes,sometimes,critical,no,Filter Ethiopia + Internship
+ethiojobs,Ethiojobs,aggregator,ethiopia,yes,https://www.ethiojobs.net,https://www.ethiojobs.net,,,,,,yes,no,sometimes,medium,no,General; less filtering
 ethiopian-reporter-jobs,Ethiopian Reporter Jobs,aggregator,ethiopia,yes,https://www.ethiopianreporterjobs.com,https://www.ethiopianreporterjobs.com,,,,,,yes,no,sometimes,low,no,
 untalent,UNTalent,aggregator,global,no,https://untalent.org,https://untalent.org,,,,,,yes,yes,sometimes,medium,no,
+dereja,Dereja,aggregator,ethiopia,yes,https://www.dereja.com,https://www.dereja.com/jobs,https://dereja.com/latest-internships-in-ethiopia,,,,,yes,no,sometimes,critical,yes,Built for Ethiopian fresh graduates; dedicated internships page
+geezjobs,GeezJobs,aggregator,ethiopia,no,https://geezjobs.com,https://geezjobs.com,https://geezjobs.com/select/internship-jobs-in-ethiopia,,,,,yes,no,sometimes,high,yes,Dedicated internship and fresh-graduate categories; NGO/UN heavy
+un-ethiopia,UN in Ethiopia jobs page,un,ethiopia,yes,https://ethiopia.un.org,https://ethiopia.un.org/en/jobs,,,,,,yes,yes,yes,high,yes,Official aggregation of all UN agency vacancies in Ethiopia
+impactpool,Impactpool,aggregator,global,no,https://www.impactpool.org,https://www.impactpool.org,,,,,,yes,yes,sometimes,medium,yes,UN/IO/NGO aggregator with internship filters
+ngojobsinafrica,NGO Jobs in Africa,aggregator,africa,no,https://ngojobsinafrica.com,https://ngojobsinafrica.com/job-location/ethiopia/,,,,,,yes,yes,sometimes,medium,yes,Africa NGO aggregator; Ethiopia location page
+opportunitiesforafricans,Opportunities For Africans,aggregator,africa,no,https://www.opportunitiesforafricans.com,https://www.opportunitiesforafricans.com,,,,,,yes,yes,sometimes,medium,yes,WordPress announcement blog; fellowships and programme calls
+opportunitydesk,Opportunity Desk,aggregator,global,no,https://opportunitydesk.org,https://opportunitydesk.org,,,,,,yes,yes,sometimes,medium,yes,WordPress announcement blog; global fellowships
+globalsouthopportunities,Global South Opportunities,aggregator,global,no,https://www.globalsouthopportunities.com,https://www.globalsouthopportunities.com,,,,,,yes,yes,sometimes,medium,yes,WordPress blog; posts AU internship calls with deadlines
+opportunitiesforyouth,Opportunities for Youth,aggregator,global,no,https://opportunitiesforyouth.org,https://opportunitiesforyouth.org,,,,,,yes,yes,sometimes,low,yes,
+iphrd-africa,International Centre for Peace and Human Rights Development,human-rights,africa,no,https://iphrdafrica.org,,https://iphrdafrica.org/internships-placement/,,,,,yes,no,unknown,medium,yes,Peace and human-rights internship placements for students
+ihrda,Institute for Human Rights and Development in Africa,human-rights,africa,no,https://www.ihrda.org,,https://www.ihrda.org/fellowships/internships/,,,,,yes,no,unknown,medium,yes,Trains young African human-rights professionals
+afdb,African Development Bank,multilateral,africa,no,https://www.afdb.org,https://www.afdb.org/en/about-us/careers,https://www.afdb.org/en/about-us/careers/internship-program,,,,,yes,yes,yes,high,yes,Paid internship program open to member-country nationals incl. Ethiopia; has run virtual cohorts
+world-bank,World Bank Group,multilateral,global,yes,https://www.worldbank.org,https://www.worldbank.org/en/about/careers,https://www.worldbank.org/en/about/careers/programs-and-internships,,,,,yes,no,yes,high,yes,Paid internships; development-studies fit; Addis country office
+icrc,International Committee of the Red Cross,ingo,global,yes,https://www.icrc.org,https://careers.icrc.org,,,,,,yes,no,yes,high,yes,Traineeships; delegation to AU in Addis; IHL fits peace/conflict cluster
+ictj,International Center for Transitional Justice,human-rights,global,no,https://www.ictj.org,https://www.ictj.org/about/employment,,,,,,yes,yes,sometimes,medium,yes,Transitional justice; strong fit for peace and human-rights students
+odi,ODI Global,think-tank,global,no,https://odi.org,https://odi.org/en/about/jobs/,,,,,,yes,yes,sometimes,medium,yes,Development policy; runs the ODI Fellowship Scheme
+dcaf,Geneva Centre for Security Sector Governance,peace,global,no,https://www.dcaf.ch,https://www.dcaf.ch/careers,,,,,,yes,no,sometimes,medium,yes,Security sector governance; internships in Geneva
+ipi,International Peace Institute,peace,global,no,https://www.ipinst.org,https://www.ipinst.org/about/careers,,,,,,yes,no,sometimes,medium,yes,Multilateral peace and security think tank close to UN
+wilson-center,Wilson Center,think-tank,global,no,https://www.wilsoncenter.org,https://www.wilsoncenter.org/job-openings,https://www.wilsoncenter.org/internships,,,,,yes,yes,sometimes,medium,yes,Africa Program internships; some remote
+minority-rights,Minority Rights Group,human-rights,global,no,https://minorityrights.org,https://minorityrights.org/about-us/jobs/,,,,,,yes,yes,sometimes,medium,yes,Has offered paid remote internships
+icc-cpi,International Criminal Court,multilateral,global,no,https://www.icc-cpi.int,https://www.icc-cpi.int/careers,,,,,,yes,no,no,low,yes,Internships in The Hague; unpaid and visa-hard — abroad self-funded
+stimson,Stimson Center,think-tank,global,no,https://www.stimson.org,https://www.stimson.org/about/careers/,,,,,,yes,yes,sometimes,low,yes,

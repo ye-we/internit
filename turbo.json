@@ -2,7 +2,25 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalEnv": ["NODE_ENV"],
-  "globalPassThroughEnv": ["DATABASE_URL", "ANTHROPIC_API_KEY", "TELEGRAM_BOT_TOKEN", "ADMIN_TOKEN"],
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "ANTHROPIC_API_KEY",
+    "GEMINI_API_KEY",
+    "STRUCTURER_ENABLED",
+    "STRUCTURER_PROVIDER",
+    "STRUCTURER_MODEL",
+    "STRUCTURER_MAX_INPUT_CHARS",
+    "STRUCTURER_TIMEOUT_MS",
+    "STRUCTURER_RETRIES",
+    "STRUCTURER_BATCH_SIZE",
+    "TELEGRAM_BOT_TOKEN",
+    "ADMIN_TOKEN",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "WEB_ORIGIN",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -16,6 +34,9 @@
       "dependsOn": ["^build"]
     },
     "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
       "dependsOn": ["^build"]
     }
   }

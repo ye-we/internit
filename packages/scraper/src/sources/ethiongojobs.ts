@@ -5,8 +5,17 @@
 
 import * as cheerio from "cheerio";
 import { PoliteFetcher } from "../fetcher.js";
-import { cleanDescriptionHtml, collapse } from "../html.js";
+import { cleanDescriptionHtml, collapse, htmlToText, isBrowserInterstitial } from "../html.js";
+import { isInternship, isRoundup } from "../filter.js";
 import type { ScrapedListing, Source } from "../index.js";
+import {
+  detectPaid,
+  extractStipend,
+  extractTopMeta,
+  findDeadlineInText,
+  orgFromTitle,
+  parseDeadline,
+} from "../text-extract.js";
 
 const SOURCE = "ethiongojobs";
 const BASE = "https://www.ethiongojobs.com";
@@ -28,8 +37,10 @@ export class EthioNGOJobsSource implements Source {
   ) {}
 
   async scrape(opts: { max?: number; maxPages?: number } = {}): Promise<ScrapedListing[]> {
-    const max = opts.max ?? 50;
-    const maxPages = opts.maxPages ?? 5;
+    // ethiongojobs is the primary Ethiopian source and carries 40+ internship
+    // posts at a time, so it pulls deep regardless of the generic per-org cap.
+    const max = opts.max ?? 80;
+    const maxPages = opts.maxPages ?? 8;
 
     const out: ScrapedListing[] = [];
     const seen = new Set<string>();
@@ -58,9 +69,14 @@ export class EthioNGOJobsSource implements Source {
         if (out.length >= max) break;
         if (seen.has(card.sourceUrl)) continue;
         seen.add(card.sourceUrl);
+        // Internships only, and skip aggregator/digest posts. The card title is
+        // the post title; filter before paying for the detail fetch.
+        if (card.title && (!isInternship(card.title) || isRoundup(card.title))) continue;
         try {
           const detail = await this.fetcher.get(card.sourceUrl);
-          out.push(parseDetailPage(card, detail));
+          const listing = parseDetailPage(card, detail);
+          if (!isInternship(listing.title)) continue;
+          out.push(listing);
         } catch (err) {
           console.error(`[${SOURCE}] failed ${card.sourceUrl}:`, err);
         }
@@ -95,10 +111,6 @@ export function parseListPage(html: string): ListCard[] {
   });
 
   return cards;
-}
-
-function isBrowserInterstitial(html: string): boolean {
-  return /<title>\s*One moment, please\.\.\.\s*<\/title>/i.test(html);
 }
 
 export function parseDetailPage(card: ListCard, html: string): ScrapedListing {
@@ -137,7 +149,10 @@ export function parseDetailPage(card: ListCard, html: string): ScrapedListing {
   const descriptionHtml = cleanDescriptionHtml($body.html() ?? "", {
     resolveUrl: absUrl,
   });
-  const descriptionText = collapse($body.text());
+  // Block-separated, not collapse($body.text()): ECA/UN reposts list fields in
+  // adjacent <p>s ("Duty Station: Addis Ababa" / "Department/Office: …"), which
+  // fuse without boundaries and bleed the location into the next field.
+  const descriptionText = htmlToText($body.html() ?? "");
 
   // Structured top-of-body fields: "Location: …", "Organization: …", "Deadline: …"
   const meta = extractTopMeta(descriptionText);
@@ -192,95 +207,9 @@ function absUrl(href: string): string {
   return `${BASE}${href.startsWith("/") ? "" : "/"}${href}`;
 }
 
-function extractTopMeta(text: string): {
-  location?: string;
-  organization?: string;
-  deadline?: string;
-  closingDate?: string;
-  department?: string;
-  dutyStation?: string;
-  workLocation?: string;
-} {
-  // Pull the first occurrence of each labelled field from the top of the body.
-  // Labels look like "Location: Remote Organization: AfricaNenda Foundation Deadline: May 29, 2026".
-  const head = text.slice(0, 600);
-  const grab = (label: RegExp) => {
-    const m = label.exec(head);
-    if (!m) return undefined;
-    const rest = head.slice(m.index + m[0].length);
-    // Stop at the next labelled field or sentence break.
-    const stop = rest.search(
-      /\s+(?:Location|Work Location|Duty Station|Organization|Organisation|Department|Deadline|Closing Date|Job Description|Duration|Hours|Engagement|About)\s*:/i,
-    );
-    const value = (stop === -1 ? rest : rest.slice(0, stop)).trim();
-    return value ? collapse(value).replace(/[.;]+$/, "") : undefined;
-  };
-  return {
-    location: grab(/\bLocation\s*:/i),
-    workLocation: grab(/\bWork Location\s*:/i),
-    dutyStation: grab(/\bDuty Station\s*:/i),
-    organization: grab(/\bOrganization\s*:|\bOrganisation\s*:/i),
-    department: grab(/\bDepartment\s*:/i),
-    deadline: grab(/\bDeadline\s*:/i),
-    closingDate: grab(/\bClosing Date\s*:/i),
-  };
-}
-
 function extractDatePublished(html: string): Date | null {
   const m = /"datePublished"\s*:\s*"([^"]+)"/.exec(html);
   if (!m) return null;
   const d = new Date(m[1]!);
   return isNaN(d.getTime()) ? null : d;
-}
-
-function parseDeadline(raw: string | undefined): Date | null {
-  if (!raw) return null;
-  // Common forms: "May 29, 2026", "29 May 2026", "29/05/2026", "2026-05-29".
-  const cleaned = raw
-    .replace(/\s+\([^)]*\)\s*$/g, "")
-    .replace(/,\s*\d{1,2}:\d{2}\s*(AM|PM)\b/i, "")
-    .replace(/\s+at\s+\d{1,2}:\d{2}\s*(AM|PM)?\b/i, "")
-    .replace(/[.,;]+$/g, "")
-    .trim();
-  const embedded = /([A-Za-z]+ \d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\s+\d{4}|\d{4}-\d{1,2}-\d{1,2})/.exec(
-    cleaned,
-  );
-  if (embedded && embedded[1] !== cleaned) {
-    return parseDeadline(embedded[1]);
-  }
-  const direct = new Date(cleaned);
-  if (!isNaN(direct.getTime())) return direct;
-  // Try day-month-year.
-  const m = /^(\d{1,2})[\s\/\-](\w+|\d{1,2})[\s\/\-](\d{2,4})$/.exec(cleaned);
-  if (m) {
-    const guess = new Date(`${m[2]} ${m[1]}, ${m[3]}`);
-    if (!isNaN(guess.getTime())) return guess;
-  }
-  return null;
-}
-
-function findDeadlineInText(text: string): Date | null {
-  const m = /(?:Deadline|Closing Date)[^A-Za-z0-9]+([A-Za-z]+ \d{1,2},?\s*\d{4}|\d{1,2}\s+[A-Za-z]+\s+\d{4})/i.exec(
-    text,
-  );
-  return m ? parseDeadline(m[1]) : null;
-}
-
-function detectPaid(titleLower: string, lowerText: string): boolean | null {
-  // CLAUDE.md: null when unclear; never invent.
-  const head = `${titleLower}\n${lowerText.slice(0, 1500)}`;
-  if (/\bunpaid\b/.test(head)) return false;
-  if (/\bpaid\b|\bstipend\b|\bmonthly\s+allowance\b/.test(head)) return true;
-  return null;
-}
-
-function extractStipend(text: string): string | null {
-  const m = /(stipend|allowance|salary)[^.\n]{0,120}/i.exec(text);
-  return m ? collapse(m[0]) : null;
-}
-
-function orgFromTitle(title: string): string | null {
-  // "Internship at FooBar Foundation" → "FooBar Foundation"
-  const m = /\bat\s+(.{2,80})$/i.exec(title);
-  return m ? m[1]!.replace(/[.,;]+$/, "").trim() : null;
 }

@@ -61,11 +61,14 @@ async function main() {
     await new Promise((res) => setTimeout(res, DELAY_MS));
     const careersStatus = await checkUrl(r.careers_url);
     await new Promise((res) => setTimeout(res, DELAY_MS));
+    const internshipStatus = await checkUrl(r.internship_url);
+    await new Promise((res) => setTimeout(res, DELAY_MS));
 
     r.website_status = websiteStatus;
     r.careers_status = careersStatus;
+    r.internship_status = internshipStatus;
     console.log(
-      `[${i + 1}/${rows.length}] ${r.slug.padEnd(28)} web:${websiteStatus.padEnd(12)} careers:${careersStatus}`
+      `[${i + 1}/${rows.length}] ${r.slug.padEnd(28)} web:${websiteStatus.padEnd(12)} careers:${careersStatus.padEnd(12)} internship:${internshipStatus}`
     );
   }
 

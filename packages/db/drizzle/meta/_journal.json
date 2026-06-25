@@ -8,6 +8,20 @@
       "when": 1779371786074,
       "tag": "0000_loud_ender_wiggin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779880000000,
+      "tag": "0001_better_auth",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748304000000,
+      "tag": "0002_user_actions",
+      "breakpoints": true
     }
   ]
 }

@@ -3,14 +3,42 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { and, asc, desc, eq, gte, ilike, inArray, sql } from "drizzle-orm";
-import { getDb, listings, orgs, type Listing, type Org } from "@rue/db";
-import { ListingsQuerySchema, ListingSchema, OrgSchema } from "@rue/shared";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  getDb,
+  gte,
+  ilike,
+  listings,
+  orgs,
+  sql,
+} from "@rue/db";
+import { ListingsQuerySchema } from "@rue/shared";
+import { auth, trustedOrigins } from "./lib/auth.js";
+import { toListingResponse, toOrgResponse } from "./lib/format.js";
+import { me } from "./routes/me.js";
+import { admin } from "./routes/admin.js";
 
 const app = new Hono();
 
 app.use("*", logger());
-app.use("/api/*", cors());
+app.use(
+  "/api/*",
+  cors({
+    origin: (origin) => {
+      if (!origin) return null;
+      return trustedOrigins.includes(origin) ? origin : null;
+    },
+    credentials: true,
+  }),
+);
+
+app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
+app.route("/", me);
+app.route("/", admin);
 
 app.get("/api/health", (c) =>
   c.json({ ok: true, ts: new Date().toISOString() }),
@@ -94,8 +122,8 @@ app.post("/api/scrape/trigger", async (c) => {
   const expected = process.env.ADMIN_TOKEN;
   if (!expected) return c.json({ error: "ADMIN_TOKEN not configured" }, 503);
 
-  const auth = c.req.header("authorization") ?? "";
-  if (auth !== `Bearer ${expected}`) {
+  const authHeader = c.req.header("authorization") ?? "";
+  if (authHeader !== `Bearer ${expected}`) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
@@ -110,9 +138,9 @@ app.post("/api/scrape/trigger", async (c) => {
       ? new UnCareersSource()
       : sourceName === "undp"
         ? new UndpSource(fetcher)
-      : sourceName === "ethiongojobs"
-        ? new EthioNGOJobsSource(fetcher)
-        : null;
+        : sourceName === "ethiongojobs"
+          ? new EthioNGOJobsSource(fetcher)
+          : null;
   if (!source) return c.json({ error: `Unknown source: ${sourceName}` }, 400);
   const scraped = await source.scrape({ max: Math.min(Math.max(max, 1), 100) });
   const result = await persistListings(source.name, scraped);
@@ -125,49 +153,3 @@ serve({ fetch: app.fetch, port }, (info) => {
 });
 
 export type AppType = typeof app;
-
-function toListingResponse(row: Listing) {
-  return ListingSchema.parse({
-    id: row.id,
-    source: row.source,
-    source_url: row.sourceUrl,
-    source_id: row.sourceId,
-    org_name: row.orgName,
-    org_slug: row.orgSlug,
-    title: row.title,
-    location: row.location,
-    is_remote: row.isRemote,
-    is_paid: row.isPaid,
-    stipend_text: row.stipendText,
-    deadline: row.deadline?.toISOString() ?? null,
-    posted_at: row.postedAt?.toISOString() ?? null,
-    scraped_at: row.scrapedAt.toISOString(),
-    description_html: row.descriptionHtml,
-    description_text: row.descriptionText,
-    field_tags: row.fieldTags,
-    fit_score: row.fitScore,
-    status: row.status,
-  });
-}
-
-function toOrgResponse(row: Org) {
-  return OrgSchema.parse({
-    slug: row.slug,
-    name: row.name,
-    category: row.category,
-    region: row.region,
-    addis_office: row.addisOffice,
-    website: row.website,
-    careers_url: row.careersUrl,
-    internship_url: row.internshipUrl,
-    application_email: row.applicationEmail,
-    twitter: row.twitter,
-    linkedin: row.linkedin,
-    telegram: row.telegram,
-    posts_publicly: row.postsPublicly,
-    has_remote: row.hasRemote,
-    has_paid: row.hasPaid,
-    scrape_priority: row.scrapePriority,
-    notes: row.notes,
-  });
-}

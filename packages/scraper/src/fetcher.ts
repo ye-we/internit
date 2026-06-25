@@ -15,8 +15,12 @@ setDefaultResultOrder("ipv4first");
 type RobotsEntry = { fetchedAt: number; allows: (path: string) => boolean };
 
 export class PoliteFetcher {
-  private lastRequestAt = 0;
-  private robotsCache = new Map<string, RobotsEntry>();
+  // Throttling is keyed by origin: 3-5s between requests to the same host,
+  // but distinct hosts proceed in parallel. The chain serializes concurrent
+  // callers per origin so the gap holds even under Promise.all.
+  private originChains = new Map<string, Promise<unknown>>();
+  private lastRequestAt = new Map<string, number>();
+  private robotsCache = new Map<string, Promise<RobotsEntry>>();
 
   constructor(
     private readonly opts: {
@@ -28,39 +32,82 @@ export class PoliteFetcher {
     } = {},
   ) {}
 
-  async get(url: string, accept = "text/html,application/xhtml+xml"): Promise<string> {
+  // skipRobots is for documented public JSON APIs (e.g. SmartRecruiters'
+  // Posting API) whose hosts blanket-disallow crawlers in robots.txt while
+  // explicitly inviting programmatic access in their docs. Throttling still
+  // applies. Never use it for HTML scraping.
+  async get(
+    url: string,
+    accept = "text/html,application/xhtml+xml",
+    o: { skipRobots?: boolean; timeoutMs?: number } = {},
+  ): Promise<string> {
+    const u = new URL(url);
+    if (this.opts.respectRobots !== false && !o.skipRobots) {
+      await this.assertAllowed(u);
+    }
+    return this.enqueue(u.origin, () =>
+      this.rawRequest(url, { accept, timeoutMs: o.timeoutMs }),
+    );
+  }
+
+  async post(url: string, jsonBody: unknown, accept = "application/json"): Promise<string> {
     const u = new URL(url);
     if (this.opts.respectRobots !== false) {
       await this.assertAllowed(u);
     }
-    await this.throttle();
-    return this.rawGet(url, accept);
+    return this.enqueue(u.origin, () =>
+      this.rawRequest(url, { accept, method: "POST", jsonBody }),
+    );
   }
 
-  private async rawGet(
+  private enqueue<T>(origin: string, fn: () => Promise<T>): Promise<T> {
+    const prev = this.originChains.get(origin) ?? Promise.resolve();
+    const next = prev
+      .catch(() => {})
+      .then(async () => {
+        await this.throttle(origin);
+        return fn();
+      });
+    this.originChains.set(
+      origin,
+      next.catch(() => {}),
+    );
+    return next;
+  }
+
+  private async rawRequest(
     url: string,
-    accept = "text/html,application/xhtml+xml",
+    reqOpts: {
+      accept?: string;
+      method?: "GET" | "POST";
+      jsonBody?: unknown;
+      timeoutMs?: number;
+    } = {},
   ): Promise<string> {
+    const method = reqOpts.method ?? "GET";
+    const accept = reqOpts.accept ?? "text/html,application/xhtml+xml";
     const maxAttempts = (this.opts.retries ?? DEFAULT_RETRIES) + 1;
+    const timeoutMs = reqOpts.timeoutMs ?? this.opts.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       const ctrl = new AbortController();
-      const timer = setTimeout(
-        () => ctrl.abort(),
-        this.opts.timeoutMs ?? DEFAULT_TIMEOUT_MS,
-      );
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
       try {
+        const headers: Record<string, string> = {
+          "User-Agent": this.opts.userAgent ?? SCRAPER_USER_AGENT,
+          Accept: accept,
+        };
+        if (method === "POST") headers["Content-Type"] = "application/json";
         const res = await fetch(url, {
-          headers: {
-            "User-Agent": this.opts.userAgent ?? SCRAPER_USER_AGENT,
-            Accept: accept,
-          },
+          method,
+          headers,
+          body: method === "POST" ? JSON.stringify(reqOpts.jsonBody ?? {}) : undefined,
           redirect: "follow",
           signal: ctrl.signal,
         });
         if (!res.ok) {
-          throw new Error(`GET ${url} → HTTP ${res.status}`);
+          throw new Error(`${method} ${url} → HTTP ${res.status}`);
         }
         return await res.text();
       } catch (err) {
@@ -73,35 +120,45 @@ export class PoliteFetcher {
       }
     }
 
-    throw lastError instanceof Error ? lastError : new Error(`GET ${url} failed`);
+    throw lastError instanceof Error ? lastError : new Error(`${method} ${url} failed`);
   }
 
-  private async throttle() {
+  private rawGet(url: string, accept?: string): Promise<string> {
+    return this.rawRequest(url, { accept });
+  }
+
+  private async throttle(origin: string) {
     const delay = this.opts.delayMs ?? DEFAULT_DELAY_MS;
-    const elapsed = Date.now() - this.lastRequestAt;
+    const elapsed = Date.now() - (this.lastRequestAt.get(origin) ?? 0);
     if (elapsed < delay) {
       await sleep(delay - elapsed);
     }
-    this.lastRequestAt = Date.now();
+    this.lastRequestAt.set(origin, Date.now());
   }
 
   private async assertAllowed(u: URL) {
     const key = u.origin;
-    let entry = this.robotsCache.get(key);
-    if (!entry || Date.now() - entry.fetchedAt > ROBOTS_TTL_MS) {
-      entry = await this.loadRobots(key);
-      this.robotsCache.set(key, entry);
+    let pending = this.robotsCache.get(key);
+    if (pending) {
+      const cached = await pending.catch(() => null);
+      if (!cached || Date.now() - cached.fetchedAt > ROBOTS_TTL_MS) {
+        pending = undefined;
+      }
     }
+    if (!pending) {
+      pending = this.loadRobots(key);
+      this.robotsCache.set(key, pending);
+    }
+    const entry = await pending;
     if (!entry.allows(u.pathname + u.search)) {
       throw new Error(`robots.txt disallows ${u.href}`);
     }
   }
 
   private async loadRobots(origin: string): Promise<RobotsEntry> {
-    await this.throttle();
     let body = "";
     try {
-      body = await this.rawGet(`${origin}/robots.txt`);
+      body = await this.enqueue(origin, () => this.rawGet(`${origin}/robots.txt`));
     } catch {
       // No robots.txt or unreachable → assume allowed.
       return { fetchedAt: Date.now(), allows: () => true };

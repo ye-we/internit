@@ -24,11 +24,35 @@ export type ScrapedListing = {
 
 export interface Source {
   name: string;
-  scrape(): Promise<ScrapedListing[]>;
+  scrape(opts?: { max?: number }): Promise<ScrapedListing[]>;
 }
 
 export { PoliteFetcher } from "./fetcher.js";
-export { persistListings, type PersistResult } from "./persist.js";
+export {
+  persistListings,
+  persistOrgRun,
+  type OrgRunResult,
+  type OrgRunStats,
+  type PersistResult,
+} from "./persist.js";
+export {
+  BrowserChallengeError,
+  isBrowserInterstitial,
+  cleanDescriptionHtml,
+  collapse,
+  htmlToText,
+} from "./html.js";
+export {
+  isInternship,
+  isEthiopiaAccessible,
+  ethiopiaAccess,
+  type AccessCategory,
+  type AccessResult,
+  type AccessParts,
+} from "./filter.js";
+export { dispatchOrg, findAdapter, type DispatchOrg, type DispatchResult } from "./dispatch.js";
+export { ADAPTERS, type Adapter, type AdapterConfig } from "./adapters/index.js";
 export { EthioNGOJobsSource } from "./sources/ethiongojobs.js";
 export { UndpSource } from "./sources/undp.js";
 export { UnCareersSource } from "./sources/un-careers.js";
+export { EhrcdSource } from "./sources/ehrdc.js";

@@ -15,8 +15,9 @@
     "@rue/db": "workspace:*",
     "@rue/scraper": "workspace:*",
     "@rue/shared": "workspace:*",
-    "drizzle-orm": "^0.36.4",
+    "better-auth": "^1.6.11",
     "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.36.4",
     "hono": "^4.6.14"
   },
   "devDependencies": {

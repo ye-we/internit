@@ -5,8 +5,10 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "useDefineForClassFields": true,
+    "declaration": false,
+    "declarationMap": false,
     "noEmit": true,
-    "types": []
+    "types": ["vite/client"]
   },
   "include": ["src/**/*"]
 }

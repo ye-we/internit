@@ -10,19 +10,26 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "scrape": "tsx src/run.ts",
-    "scrape:orgs": "tsx src/run-orgs.ts"
+    "scrape:orgs": "tsx src/run-orgs.ts",
+    "inspect:structure": "tsx src/inspect-structure.ts",
+    "backfill:structure": "tsx src/backfill-structure.ts",
+    "backfill:generic": "tsx src/backfill-generic.ts",
+    "prune:expired": "tsx src/prune-expired.ts",
+    "dedup": "tsx src/dedup-run.ts"
   },
   "dependencies": {
     "@rue/classifier": "workspace:*",
-    "@rue/shared": "workspace:*",
     "@rue/db": "workspace:*",
+    "@rue/shared": "workspace:*",
     "cheerio": "^1.0.0",
     "drizzle-orm": "^0.36.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.8"
   }
 }

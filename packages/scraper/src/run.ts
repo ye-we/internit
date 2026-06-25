@@ -10,6 +10,7 @@ import { persistListings } from "./persist.js";
 import { EthioNGOJobsSource } from "./sources/ethiongojobs.js";
 import { UndpSource } from "./sources/undp.js";
 import { UnCareersSource } from "./sources/un-careers.js";
+import { EhrcdSource } from "./sources/ehrdc.js";
 
 const maxArg = process.argv.slice(2).find((arg) => /^\d+$/.test(arg));
 const max = Number(maxArg ?? 10);
@@ -23,9 +24,11 @@ const source =
     ? new UnCareersSource()
     : sourceName === "undp"
       ? new UndpSource(fetcher)
-    : sourceName === "ethiongojobs"
-      ? new EthioNGOJobsSource(fetcher)
-      : null;
+      : sourceName === "ehrdc"
+        ? new EhrcdSource(fetcher)
+        : sourceName === "ethiongojobs"
+          ? new EthioNGOJobsSource(fetcher)
+          : null;
 
 if (!source) {
   console.error(`[scraper] unknown source: ${sourceName}`);
