@@ -8,11 +8,11 @@
 // Dry-run by default. Pass --apply to write.
 //
 // Usage:
-//   pnpm --filter @rue/scraper dedup
-//   pnpm --filter @rue/scraper dedup -- --apply
+//   pnpm --filter @internit/scraper dedup
+//   pnpm --filter @internit/scraper dedup -- --apply
 
 import { eq } from "drizzle-orm";
-import { closeDb, getDb, listings } from "@rue/db";
+import { closeDb, getDb, listings } from "@internit/db";
 import { clusterDuplicates, type DedupItem } from "./dedup.js";
 
 const apply = process.argv.includes("--apply");

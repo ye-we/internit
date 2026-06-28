@@ -1,22 +1,27 @@
 // PM2 process file. `pm2 start ecosystem.config.cjs`
-// Scrape schedule: 23:00 UTC = 02:00 EAT (Africa/Addis_Ababa, UTC+3).
+//
+// Web (public + admin) is the SvelteKit app with direct DB access — not here.
+// Two long-running processes, both PM2-managed (its strength):
+//   - internit-worker: schedules the nightly scrape→dedup→prune pipeline itself
+//     (croner, 02:00 EAT), so no cron_restart hack.
+//   - internit-bot: the Telegram bot (commands + channel auto-post + reminders).
 module.exports = {
   apps: [
     {
-      name: "rue-api",
+      name: "internit-worker",
       cwd: __dirname,
       script: "pnpm",
-      args: "--filter @rue/api run start",
+      args: "--filter @internit/worker run start",
       autorestart: true,
       max_restarts: 10,
     },
     {
-      name: "rue-scrape-orgs",
+      name: "internit-bot",
       cwd: __dirname,
       script: "pnpm",
-      args: "--filter @rue/scraper run scrape:orgs -- --save --max 20",
-      cron_restart: "0 23 * * *",
-      autorestart: false,
+      args: "--filter @internit/bot run start",
+      autorestart: true,
+      max_restarts: 10,
     },
   ],
 };

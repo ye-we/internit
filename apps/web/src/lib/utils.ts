@@ -1,32 +1,22 @@
-export function daysUntil(raw: string | null): number | null {
-  if (!raw) return null;
-  return Math.ceil((new Date(raw).getTime() - Date.now()) / 86_400_000);
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
-export function daysLabel(days: number | null): string {
-  if (days === null) return "-";
-  if (days < 0) return "expired";
-  if (days === 0) return "today";
-  if (days === 1) return "1d";
-  return `${days}d`;
-}
-
-export function compactDeadline(raw: string | null): string {
-  if (!raw) return "No deadline";
-  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(new Date(raw));
-}
-
-export function formatDate(raw: string): string {
-  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(new Date(raw));
-}
-
-export function payLabel(value: boolean | null): string {
-  if (value === true) return "Paid";
-  if (value === false) return "Unpaid";
-  return "Pay unclear";
-}
-
-export function toDatetimeLocal(date: Date): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WithoutChild<T> = T extends { child?: any } ? Omit<T, "child"> : T;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WithoutChildren<T> = T extends { children?: any }
+  ? Omit<T, "children">
+  : T;
+export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
+export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
+  ref?: U | null;
+};
+export function daysLabel(deadline: Date | null): string {
+  if (!deadline) return "—";
+  const days = Math.ceil((deadline.getTime() - Date.now()) / 86_400_000);
+  return days < 0 ? "expired" : `${days}d`;
 }

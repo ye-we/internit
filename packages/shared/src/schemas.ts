@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { LISTING_STATUS, SCRAPE_PRIORITIES } from "./constants.js";
 
-// Wire schemas for API responses. Mirror the Drizzle tables in @rue/db
+// Wire schemas for API responses. Mirror the Drizzle tables in @internit/db
 // but live here so the web client can import them without pulling in
 // pg/Drizzle.
 

@@ -11,14 +11,14 @@
 // Dry-run by default — prints what would change. Pass --apply to write.
 //
 // Usage:
-//   pnpm --filter @rue/scraper backfill:generic                       # dry-run, 20 rows
-//   pnpm --filter @rue/scraper backfill:generic -- --apply
-//   pnpm --filter @rue/scraper backfill:generic -- --apply --limit all
-//   pnpm --filter @rue/scraper backfill:generic -- --apply --source generic:uneca.org
-//   pnpm --filter @rue/scraper backfill:generic -- --apply --refetch  # ignore cached containerHtml
+//   pnpm --filter @internit/scraper backfill:generic                       # dry-run, 20 rows
+//   pnpm --filter @internit/scraper backfill:generic -- --apply
+//   pnpm --filter @internit/scraper backfill:generic -- --apply --limit all
+//   pnpm --filter @internit/scraper backfill:generic -- --apply --source generic:uneca.org
+//   pnpm --filter @internit/scraper backfill:generic -- --apply --refetch  # ignore cached containerHtml
 
 import { eq, like } from "drizzle-orm";
-import { closeDb, getDb, listings as listingsTable, type Listing } from "@rue/db";
+import { closeDb, getDb, listings as listingsTable, type Listing } from "@internit/db";
 import { PoliteFetcher } from "./fetcher.js";
 import { BrowserChallengeError, isBrowserInterstitial } from "./html.js";
 import { buildListing, selectContainerHtml } from "./adapters/generic-html.js";

@@ -1,6 +1,6 @@
 # Brief: scale the Tilq scraper from 4 bespoke sources to 30–50+
 
-You are being asked to design and write the `@rue/scraper` package for **Tilq / Rue**, an internship aggregator for Ethiopian undergraduates studying social sciences (political science, IR, governance, peace & conflict, human rights, sociology, development studies, public policy). The product surfaces in two places: a Telegram channel + bot, and a reader-mode web app.
+You are being asked to design and write the `@internit/scraper` package for **Tilq / Rue**, an internship aggregator for Ethiopian undergraduates studying social sciences (political science, IR, governance, peace & conflict, human rights, sociology, development studies, public policy). The product surfaces in two places: a Telegram channel + bot, and a reader-mode web app.
 
 You will not have access to the repository. Everything you need to design correctly is inlined below — types, interfaces, target sites, conventions. Treat this brief as the source of truth and produce the deliverable from it.
 

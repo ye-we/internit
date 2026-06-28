@@ -1,9 +1,9 @@
 // Manual runner. Usage:
-//   pnpm --filter @rue/scraper run scrape          # 10 listings
-//   pnpm --filter @rue/scraper run scrape -- 20    # 20 listings
-//   pnpm --filter @rue/scraper run scrape -- 20 --save
-//   pnpm --filter @rue/scraper run scrape -- --source undp --ignore-robots --save
-//   pnpm --filter @rue/scraper run scrape -- --source un-careers --save
+//   pnpm --filter @internit/scraper run scrape          # 10 listings
+//   pnpm --filter @internit/scraper run scrape -- 20    # 20 listings
+//   pnpm --filter @internit/scraper run scrape -- 20 --save
+//   pnpm --filter @internit/scraper run scrape -- --source undp --ignore-robots --save
+//   pnpm --filter @internit/scraper run scrape -- --source un-careers --save
 
 import { PoliteFetcher } from "./fetcher.js";
 import { persistListings } from "./persist.js";

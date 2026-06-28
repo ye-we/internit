@@ -1,7 +1,7 @@
 import {
   StructuredListingSchema,
   type StructuredListing,
-} from "@rue/shared";
+} from "@internit/shared";
 import type { ScrapedListing } from "./index.js";
 
 const DEFAULT_MODEL = "gemini-2.5-flash-lite";

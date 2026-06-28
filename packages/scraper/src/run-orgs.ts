@@ -1,14 +1,14 @@
 // Org-driven runner: dispatches every eligible org through the adapter
 // registry (ATS APIs, WordPress, generic-HTML fallback). Usage:
-//   pnpm --filter @rue/scraper run scrape:orgs -- --dry-run
-//   pnpm --filter @rue/scraper run scrape:orgs -- --save --max 10
-//   pnpm --filter @rue/scraper run scrape:orgs -- --priority critical,high
-//   pnpm --filter @rue/scraper run scrape:orgs -- --org undp --save
+//   pnpm --filter @internit/scraper run scrape:orgs -- --dry-run
+//   pnpm --filter @internit/scraper run scrape:orgs -- --save --max 10
+//   pnpm --filter @internit/scraper run scrape:orgs -- --priority critical,high
+//   pnpm --filter @internit/scraper run scrape:orgs -- --org undp --save
 //
 // Orgs run with bounded concurrency; PoliteFetcher still guarantees the
 // 3-5s gap per host, so parallelism only helps across distinct hosts.
 
-import { closeDb, getDb, orgs, type Org } from "@rue/db";
+import { closeDb, getDb, orgs, type Org } from "@internit/db";
 import { and, inArray } from "drizzle-orm";
 import { dispatchOrg, findAdapter, type DispatchResult } from "./dispatch.js";
 import { PoliteFetcher } from "./fetcher.js";

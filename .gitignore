@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # verified output of verify-orgs.ts
 orgs-verified.csv
+logs/

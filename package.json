@@ -1,5 +1,5 @@
 {
-  "name": "rue",
+  "name": "internit",
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@10.33.0",
@@ -8,9 +8,9 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "db:generate": "pnpm --filter @rue/db generate",
-    "db:migrate": "pnpm --filter @rue/db migrate",
-    "db:seed": "pnpm --filter @rue/db seed",
+    "db:generate": "pnpm --filter @internit/db generate",
+    "db:migrate": "pnpm --filter @internit/db migrate",
+    "db:seed": "pnpm --filter @internit/db seed",
     "verify-orgs": "tsx verify-orgs.ts"
   },
   "devDependencies": {

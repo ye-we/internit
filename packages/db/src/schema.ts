@@ -1,19 +1,32 @@
 import {
-  bigint,
-  boolean,
-  index,
-  integer,
-  jsonb,
   pgTable,
   text,
+  boolean,
+  integer,
+  bigint,
   timestamp,
-  uniqueIndex,
   uuid,
+  jsonb,
+  index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 
-// Orgs: 231-row seed loaded from orgs-seed.csv. Slug is the primary key
-// because it's what listings reference and what the CSV is keyed on.
+const tstz = (name: string) =>
+  timestamp(name, { withTimezone: true, mode: "date" });
+
+// uuid() PKs were `@default(uuid())` in Prisma — generated app-side, not by the
+// DB — so we keep that behavior with crypto.randomUUID() rather than adding a
+// DB-level default that would diverge from the existing schema.
+const uuidPk = () =>
+  uuid("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID());
+
+// ---------------------------------------------------------------------------
+// Application tables
+// ---------------------------------------------------------------------------
+
 export const orgs = pgTable(
   "orgs",
   {
@@ -22,108 +35,77 @@ export const orgs = pgTable(
     category: text("category").notNull(),
     region: text("region"),
     addisOffice: boolean("addis_office"),
-
     website: text("website"),
     careersUrl: text("careers_url"),
     internshipUrl: text("internship_url"),
     applicationEmail: text("application_email"),
-
     twitter: text("twitter"),
     linkedin: text("linkedin"),
     telegram: text("telegram"),
-
-    // 'yes' | 'no' | 'sometimes' | 'unknown' — controls whether the org
-    // appears in the scraping pipeline (yes/sometimes) or only the
-    // cold-outreach directory (no/unknown).
     postsPublicly: text("posts_publicly").notNull().default("unknown"),
-    // CSV uses 'yes' | 'no' | 'sometimes' for these — kept as text so we
-    // don't lose the 'sometimes' signal.
     hasRemote: text("has_remote"),
     hasPaid: text("has_paid"),
-
-    // 'critical' | 'high' | 'medium' | 'low'
     scrapePriority: text("scrape_priority"),
-
     notes: text("notes"),
-
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+    updatedAt: tstz("updated_at").notNull().defaultNow(),
   },
-  (t) => ({
-    categoryIdx: index("orgs_category_idx").on(t.category),
-    postsPubliclyIdx: index("orgs_posts_publicly_idx").on(t.postsPublicly),
-    scrapePriorityIdx: index("orgs_scrape_priority_idx").on(t.scrapePriority),
-  }),
+  (t) => [
+    index("orgs_category_idx").on(t.category),
+    index("orgs_posts_publicly_idx").on(t.postsPublicly),
+    index("orgs_scrape_priority_idx").on(t.scrapePriority),
+  ],
 );
 
 export const listings = pgTable(
   "listings",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuidPk(),
     source: text("source").notNull(),
     sourceUrl: text("source_url").notNull(),
     sourceId: text("source_id"),
-
     orgName: text("org_name").notNull(),
-    // Soft FK to orgs.slug — nullable because a scraped listing may
-    // mention an org we haven't seeded yet.
     orgSlug: text("org_slug").references(() => orgs.slug, {
       onDelete: "set null",
     }),
-
     title: text("title").notNull(),
     location: text("location"),
     isRemote: boolean("is_remote").notNull().default(false),
-    // null = unclear from the source; never invent.
     isPaid: boolean("is_paid"),
     stipendText: text("stipend_text"),
-
-    deadline: timestamp("deadline", { withTimezone: true }),
-    postedAt: timestamp("posted_at", { withTimezone: true }),
-    scrapedAt: timestamp("scraped_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-
+    deadline: tstz("deadline"),
+    postedAt: tstz("posted_at"),
+    scrapedAt: tstz("scraped_at").notNull().defaultNow(),
     descriptionHtml: text("description_html").notNull(),
     descriptionText: text("description_text").notNull(),
-
-    fieldTags: text("field_tags").array().notNull().default(sql`'{}'::text[]`),
+    fieldTags: text("field_tags").array().notNull().default([]),
     fitScore: integer("fit_score").notNull().default(0),
-
-    // 'active' | 'expired' | 'hidden'
     status: text("status").notNull().default("active"),
-
+    // Set true once the Telegram channel has broadcast this listing, so the
+    // bot's auto-post job never sends the same listing twice.
+    postedToChannel: boolean("posted_to_channel").notNull().default(false),
     raw: jsonb("raw"),
   },
-  (t) => ({
-    sourceUrlUnique: uniqueIndex("listings_source_url_unique").on(t.sourceUrl),
-    sourceIdx: index("listings_source_idx").on(t.source),
-    deadlineIdx: index("listings_deadline_idx").on(t.deadline),
-    statusIdx: index("listings_status_idx").on(t.status),
-    fitScoreIdx: index("listings_fit_score_idx").on(t.fitScore),
-    orgSlugIdx: index("listings_org_slug_idx").on(t.orgSlug),
-  }),
+  (t) => [
+    uniqueIndex("listings_source_url_unique").on(t.sourceUrl),
+    index("listings_source_idx").on(t.source),
+    index("listings_deadline_idx").on(t.deadline),
+    index("listings_status_idx").on(t.status),
+    index("listings_fit_score_idx").on(t.fitScore),
+    index("listings_org_slug_idx").on(t.orgSlug),
+    // Drives the channel auto-post query: not-yet-posted, active, high-fit.
+    index("listings_channel_queue_idx").on(t.postedToChannel, t.status, t.fitScore),
+  ],
 );
 
-// Telegram subscribers. chat_id is the natural PK from Telegram.
 export const subscribers = pgTable("subscribers", {
   chatId: bigint("chat_id", { mode: "bigint" }).primaryKey(),
   username: text("username"),
-  joinedAt: timestamp("joined_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  // { fields: string[], paid_only: boolean, remote_ok: boolean }
+  joinedAt: tstz("joined_at").notNull().defaultNow(),
   filters: jsonb("filters")
     .notNull()
-    .default(sql`'{"fields":[],"paid_only":false,"remote_ok":true}'::jsonb`),
-  savedListingIds: uuid("saved_listing_ids")
-    .array()
-    .notNull()
-    .default(sql`'{}'::uuid[]`),
+    .default({ fields: [], paid_only: false, remote_ok: true }),
+  savedListingIds: uuid("saved_listing_ids").array().notNull().default([]),
   notify24h: boolean("notify_24h").notNull().default(true),
   notify72h: boolean("notify_72h").notNull().default(true),
 });
@@ -131,24 +113,23 @@ export const subscribers = pgTable("subscribers", {
 export const scrapeRuns = pgTable(
   "scrape_runs",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuidPk(),
     source: text("source").notNull(),
-    startedAt: timestamp("started_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    startedAt: tstz("started_at").notNull().defaultNow(),
+    finishedAt: tstz("finished_at"),
     newCount: integer("new_count").notNull().default(0),
     updatedCount: integer("updated_count").notNull().default(0),
     errorCount: integer("error_count").notNull().default(0),
     log: jsonb("log"),
   },
-  (t) => ({
-    sourceStartedIdx: index("scrape_runs_source_started_idx").on(
-      t.source,
-      t.startedAt,
-    ),
-  }),
+  (t) => [index("scrape_runs_source_started_idx").on(t.source, t.startedAt)],
 );
+
+// ---------------------------------------------------------------------------
+// better-auth tables — property names MUST match better-auth's field names
+// (id, emailVerified, userId, accountId, providerId, …) or the adapter breaks.
+// DB column names are preserved via the snake_case first arg.
+// ---------------------------------------------------------------------------
 
 export const user = pgTable(
   "user",
@@ -159,40 +140,30 @@ export const user = pgTable(
     emailVerified: boolean("email_verified").notNull().default(false),
     image: text("image"),
     role: text("role").notNull().default("user"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+    updatedAt: tstz("updated_at").notNull().defaultNow(),
   },
-  (t) => ({
-    emailUnique: uniqueIndex("user_email_unique").on(t.email),
-  }),
+  (t) => [uniqueIndex("user_email_unique").on(t.email)],
 );
 
 export const session = pgTable(
   "session",
   {
     id: text("id").primaryKey(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    expiresAt: tstz("expires_at").notNull(),
     token: text("token").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+    updatedAt: tstz("updated_at").notNull().defaultNow(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (t) => ({
-    tokenUnique: uniqueIndex("session_token_unique").on(t.token),
-    userIdIdx: index("session_user_id_idx").on(t.userId),
-  }),
+  (t) => [
+    uniqueIndex("session_token_unique").on(t.token),
+    index("session_user_id_idx").on(t.userId),
+  ],
 );
 
 export const account = pgTable(
@@ -207,25 +178,17 @@ export const account = pgTable(
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    accessTokenExpiresAt: timestamp("access_token_expires_at", {
-      withTimezone: true,
-    }),
-    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
-      withTimezone: true,
-    }),
+    accessTokenExpiresAt: tstz("access_token_expires_at"),
+    refreshTokenExpiresAt: tstz("refresh_token_expires_at"),
     scope: text("scope"),
     password: text("password"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+    updatedAt: tstz("updated_at").notNull().defaultNow(),
   },
-  (t) => ({
-    userIdIdx: index("account_user_id_idx").on(t.userId),
-    accountProviderIdx: index("account_provider_idx").on(t.providerId, t.accountId),
-  }),
+  (t) => [
+    index("account_user_id_idx").on(t.userId),
+    index("account_provider_idx").on(t.providerId, t.accountId),
+  ],
 );
 
 export const verification = pgTable(
@@ -234,18 +197,93 @@ export const verification = pgTable(
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    expiresAt: tstz("expires_at").notNull(),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+    updatedAt: tstz("updated_at").notNull().defaultNow(),
   },
-  (t) => ({
-    identifierIdx: index("verification_identifier_idx").on(t.identifier),
-  }),
+  (t) => [index("verification_identifier_idx").on(t.identifier)],
 );
+
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    id: uuidPk(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    listingId: uuid("listing_id")
+      .notNull()
+      .references(() => listings.id, { onDelete: "cascade" }),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("bookmarks_user_listing_idx").on(t.userId, t.listingId)],
+);
+
+export const reminders = pgTable(
+  "reminders",
+  {
+    id: uuidPk(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    listingId: uuid("listing_id")
+      .notNull()
+      .references(() => listings.id, { onDelete: "cascade" }),
+    remindAt: tstz("remind_at").notNull(),
+    note: text("note"),
+    createdAt: tstz("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("reminders_user_listing_idx").on(t.userId, t.listingId)],
+);
+
+// ---------------------------------------------------------------------------
+// Relations — power the `with` clause in relational queries
+// ---------------------------------------------------------------------------
+
+export const orgsRelations = relations(orgs, ({ many }) => ({
+  listings: many(listings),
+}));
+
+export const listingsRelations = relations(listings, ({ one, many }) => ({
+  org: one(orgs, { fields: [listings.orgSlug], references: [orgs.slug] }),
+  bookmarks: many(bookmarks),
+  reminders: many(reminders),
+}));
+
+export const userRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
+  bookmarks: many(bookmarks),
+  reminders: many(reminders),
+}));
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, { fields: [session.userId], references: [user.id] }),
+}));
+
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, { fields: [account.userId], references: [user.id] }),
+}));
+
+export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
+  user: one(user, { fields: [bookmarks.userId], references: [user.id] }),
+  listing: one(listings, {
+    fields: [bookmarks.listingId],
+    references: [listings.id],
+  }),
+}));
+
+export const remindersRelations = relations(reminders, ({ one }) => ({
+  user: one(user, { fields: [reminders.userId], references: [user.id] }),
+  listing: one(listings, {
+    fields: [reminders.listingId],
+    references: [listings.id],
+  }),
+}));
+
+// ---------------------------------------------------------------------------
+// Inferred types — consumed by the scraper, worker, and bot.
+// ---------------------------------------------------------------------------
 
 export type Org = typeof orgs.$inferSelect;
 export type NewOrg = typeof orgs.$inferInsert;
@@ -263,43 +301,6 @@ export type Account = typeof account.$inferSelect;
 export type NewAccount = typeof account.$inferInsert;
 export type Verification = typeof verification.$inferSelect;
 export type NewVerification = typeof verification.$inferInsert;
-
-export const bookmarks = pgTable(
-  "bookmarks",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    listingId: uuid("listing_id")
-      .notNull()
-      .references(() => listings.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (t) => ({
-    userListingUniq: uniqueIndex("bookmarks_user_listing_idx").on(t.userId, t.listingId),
-  }),
-);
-
-export const reminders = pgTable(
-  "reminders",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    listingId: uuid("listing_id")
-      .notNull()
-      .references(() => listings.id, { onDelete: "cascade" }),
-    remindAt: timestamp("remind_at", { withTimezone: true }).notNull(),
-    note: text("note"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (t) => ({
-    userListingUniq: uniqueIndex("reminders_user_listing_idx").on(t.userId, t.listingId),
-  }),
-);
-
 export type Bookmark = typeof bookmarks.$inferSelect;
 export type NewBookmark = typeof bookmarks.$inferInsert;
 export type Reminder = typeof reminders.$inferSelect;

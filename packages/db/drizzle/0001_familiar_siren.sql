@@ -1,0 +1,2 @@
+ALTER TABLE "listings" ADD COLUMN "posted_to_channel" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+CREATE INDEX "listings_channel_queue_idx" ON "listings" USING btree ("posted_to_channel","status","fit_score");

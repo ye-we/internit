@@ -1,5 +1,5 @@
 {
-  "name": "@rue/scraper",
+  "name": "@internit/scraper",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -20,11 +20,11 @@
     "dedup": "tsx src/dedup-run.ts"
   },
   "dependencies": {
-    "@rue/classifier": "workspace:*",
-    "@rue/db": "workspace:*",
-    "@rue/shared": "workspace:*",
+    "@internit/classifier": "workspace:*",
+    "@internit/db": "workspace:*",
+    "@internit/shared": "workspace:*",
     "cheerio": "^1.0.0",
-    "drizzle-orm": "^0.36.4"
+    "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

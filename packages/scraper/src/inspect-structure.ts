@@ -1,9 +1,9 @@
 // Inspect the AI structurer against one real listing without persisting changes.
 //
 // Usage:
-//   pnpm --filter @rue/scraper inspect:structure
-//   pnpm --filter @rue/scraper inspect:structure -- --source undp
-//   pnpm --filter @rue/scraper inspect:structure -- --scrape
+//   pnpm --filter @internit/scraper inspect:structure
+//   pnpm --filter @internit/scraper inspect:structure -- --source undp
+//   pnpm --filter @internit/scraper inspect:structure -- --scrape
 
 import { desc, isNotNull } from "drizzle-orm";
 import {
@@ -11,7 +11,7 @@ import {
   getDb,
   listings as listingsTable,
   type Listing,
-} from "@rue/db";
+} from "@internit/db";
 import { PoliteFetcher } from "./fetcher.js";
 import type { ScrapedListing, Source } from "./index.js";
 import { structureListing } from "./structure.js";

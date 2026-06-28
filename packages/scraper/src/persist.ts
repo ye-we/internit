@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
-import { classify } from "@rue/classifier";
-import { closeDb, getDb, listings, orgs, scrapeRuns, type NewListing } from "@rue/db";
-import { FIT_THRESHOLDS, type Classification } from "@rue/shared";
+import { classify } from "@internit/classifier";
+import { closeDb, getDb, listings, orgs, scrapeRuns, type NewListing } from "@internit/db";
+import { FIT_THRESHOLDS, type Classification } from "@internit/shared";
 
 // A stored classification tagged with a hash of the text it was made from, so a
 // re-scrape can reuse it (and skip the LLM call) when the posting is unchanged.

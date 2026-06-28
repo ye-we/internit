@@ -1,12 +1,12 @@
 // Backfill AI structured data for listings already stored in Postgres.
 //
 // Usage:
-//   pnpm --filter @rue/scraper backfill:structure
-//   pnpm --filter @rue/scraper backfill:structure -- --limit 50
-//   pnpm --filter @rue/scraper backfill:structure -- --limit all
-//   pnpm --filter @rue/scraper backfill:structure -- --force
-//   pnpm --filter @rue/scraper backfill:structure -- --repair-columns
-//   pnpm --filter @rue/scraper backfill:structure -- --dry-run
+//   pnpm --filter @internit/scraper backfill:structure
+//   pnpm --filter @internit/scraper backfill:structure -- --limit 50
+//   pnpm --filter @internit/scraper backfill:structure -- --limit all
+//   pnpm --filter @internit/scraper backfill:structure -- --force
+//   pnpm --filter @internit/scraper backfill:structure -- --repair-columns
+//   pnpm --filter @internit/scraper backfill:structure -- --dry-run
 
 import { desc, eq } from "drizzle-orm";
 import {
@@ -14,8 +14,8 @@ import {
   getDb,
   listings as listingsTable,
   type Listing,
-} from "@rue/db";
-import type { StructuredListing } from "@rue/shared";
+} from "@internit/db";
+import type { StructuredListing } from "@internit/shared";
 import { createHash } from "node:crypto";
 import type { ScrapedListing } from "./index.js";
 import { structureListingsBatch } from "./structure.js";

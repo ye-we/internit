@@ -9,7 +9,7 @@ import {
   INCLUDE_KEYWORDS,
   type Classification,
   type FieldTag,
-} from "@rue/shared";
+} from "@internit/shared";
 
 export type Tier1Result =
   | { decision: "include"; fitScore: number; matched: string[] }

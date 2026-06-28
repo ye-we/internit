@@ -1,16 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  server: {
-    port: 5173,
-    proxy: {
-      "/api": {
-        target: process.env.VITE_API_URL ?? "http://localhost:8787",
-        changeOrigin: true,
-      },
-    },
-  },
-});
+// envDir points at the monorepo root so SvelteKit's $env/* reads the single
+// shared .env (DATABASE_URL + auth secrets) used by every workspace package.
+export default defineConfig({ envDir: '../../', plugins: [tailwindcss(), sveltekit()] });
