@@ -8,6 +8,7 @@ export type ScrapedListing = {
   source: string;
   sourceUrl: string;
   sourceId: string | null;
+  applyUrl?: string | null;
   orgName: string;
   orgSlug: string | null;
   title: string;
@@ -50,7 +51,7 @@ export {
   type AccessResult,
   type AccessParts,
 } from "./filter.js";
-export { structureListingsBatch } from "./structure.js";
+export { structureListingsBatch, getGeminiRequestCount } from "./structure.js";
 export { ensureStructured, type StructuredResult } from "./structure-listings.js";
 export { dispatchOrg, findAdapter, type DispatchOrg, type DispatchResult } from "./dispatch.js";
 export { ADAPTERS, type Adapter, type AdapterConfig } from "./adapters/index.js";

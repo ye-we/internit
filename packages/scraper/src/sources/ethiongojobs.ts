@@ -175,11 +175,13 @@ export function parseDetailPage(card: ListCard, html: string): ScrapedListing {
 
   const isPaid = detectPaid(title.toLowerCase(), lowerText);
   const stipendText = extractStipend(descriptionText);
+  const applyUrl = extractApplyUrl(descriptionHtml, card.sourceUrl);
 
   return {
     source: SOURCE,
     sourceUrl: card.sourceUrl,
     sourceId: card.sourceId,
+    applyUrl,
     orgName,
     orgSlug: null, // org matching happens downstream
     title,
@@ -197,6 +199,60 @@ export function parseDetailPage(card: ListCard, html: string): ScrapedListing {
       meta,
     },
   };
+}
+
+// ---------- apply-link extraction ----------
+
+// Known application/ATS hosts + path signals — a link here is almost always the
+// real "apply" target, not a related-info link.
+const APPLY_HOST_RE =
+  /careers\.un\.org|greenhouse\.io|boards\.greenhouse|myworkdayjobs|\.workday\.|lever\.co|jobs\.lever|emply\.com|jobs2web|bamboohr|oraclecloud|taleo|smartrecruiters|forms\.gle|docs\.google\.com\/forms|typeform|breezy\.hr|recruitee|jobvite|icims|successfactors|jobs\.au\.int|reliefweb\.int|impactpool|hahu\.jobs/i;
+const APPLY_PATH_RE = /gh_jid=|\/vacanc(?:y|ies)\/|\/careers?\/|\/jobs?\/|\/apply\b|\/job\//i;
+
+// Pull the direct application link out of an ethiongojobs body. Their posts end
+// with a "CLICK HERE TO APPLY>>>" link (or "How to Apply … <link>") pointing at
+// the org's own ATS, so readers can skip ethiongojobs' ads and apply at source.
+// Scores each external anchor on its text ("apply"/CTA), its host/path (a known
+// ATS), and its position (apply links sit late), and gates on a confidence floor
+// so a stray info link never wins.
+export function extractApplyUrl(html: string, pageUrl: string): string | null {
+  const $ = cheerio.load(html);
+  const pageHost = hostOf(pageUrl);
+  const anchors: Array<{ href: string; text: string }> = [];
+  $("a[href]").each((_, a) => {
+    const href = ($(a).attr("href") ?? "").trim();
+    if (!/^https?:\/\//i.test(href)) return;
+    const h = hostOf(href);
+    if (!h || h === pageHost || /(^|\.)ethiongojobs\.com$/i.test(h)) return;
+    anchors.push({ href, text: collapse($(a).text()) });
+  });
+  if (anchors.length === 0) return null;
+
+  const scoreOf = (a: { href: string; text: string }, i: number): number => {
+    let s = 0;
+    if (/\bapply\b/i.test(a.text)) s += 12;
+    if (/click here|register|application form|apply (?:here|now|online)/i.test(a.text)) s += 6;
+    if (/^(?:link|here)$/i.test(a.text) || />>/.test(a.text)) s += 3;
+    if (APPLY_HOST_RE.test(a.href) || APPLY_PATH_RE.test(a.href)) s += 8;
+    return s + i / anchors.length; // apply link usually sits late in the body
+  };
+
+  let best = anchors[0]!;
+  let bestScore = -Infinity;
+  anchors.forEach((a, i) => {
+    const s = scoreOf(a, i);
+    if (s > bestScore) [best, bestScore] = [a, s];
+  });
+  // Below this, the top link is likely just related info, not an application.
+  return bestScore >= 4 ? best.href : null;
+}
+
+function hostOf(u: string): string {
+  try {
+    return new URL(u).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
 }
 
 // ---------- helpers ----------

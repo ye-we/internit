@@ -15,6 +15,13 @@
       "when": 1782372657870,
       "tag": "0001_familiar_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783013274277,
+      "tag": "0002_add_apply_url",
+      "breakpoints": true
     }
   ]
 }

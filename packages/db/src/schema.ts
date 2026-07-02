@@ -64,6 +64,10 @@ export const listings = pgTable(
     source: text("source").notNull(),
     sourceUrl: text("source_url").notNull(),
     sourceId: text("source_id"),
+    // Direct application/source link parsed out of the posting body (e.g. the
+    // org's own ATS behind ethiongojobs' "CLICK HERE TO APPLY"), so readers skip
+    // the aggregator. sourceUrl stays the attribution link.
+    applyUrl: text("apply_url"),
     orgName: text("org_name").notNull(),
     orgSlug: text("org_slug").references(() => orgs.slug, {
       onDelete: "set null",

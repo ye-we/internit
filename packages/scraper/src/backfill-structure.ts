@@ -18,7 +18,7 @@ import {
 import type { StructuredListing } from "@internit/shared";
 import { createHash } from "node:crypto";
 import type { ScrapedListing } from "./index.js";
-import { structureListingsBatch } from "./structure.js";
+import { getGeminiRequestCount, structureListingsBatch } from "./structure.js";
 
 const force = process.argv.includes("--force");
 const dryRun = process.argv.includes("--dry-run");
@@ -126,6 +126,7 @@ console.error(`  scanned:         ${rows.length}`);
 console.error(`  cachedSkipped:   ${skippedCached}`);
 console.error(`  noOutputSkipped: ${skippedDisabled}`);
 console.error(`  structured:      ${structuredCount}`);
+console.error(`  geminiRequests:  ${getGeminiRequestCount()} (paced ≤12/min)`);
 console.error(`  repairedCached:  ${repairedCached}`);
 console.error(`  updated:         ${updatedCount}`);
 console.error(`  errors:          ${errorCount}`);
@@ -138,6 +139,9 @@ function repairValues(row: Listing, data: StructuredListing) {
   if (data.location) out.location = data.location;
   out.isPaid = data.is_paid;
   out.stipendText = data.stipend_text;
+  // Direct application link the LLM pulled from the prose (e.g. the org's ATS
+  // behind an Idealist listing), when the scraper didn't already extract one.
+  if (data.application_url && !row.applyUrl) out.applyUrl = data.application_url;
 
   const deadline = parseDate(data.deadline);
   if (deadline) {

@@ -1,4 +1,4 @@
-// Background worker: runs the scrape → dedup → prune pipeline on a schedule.
+// Background worker: runs the scrape → dedup → prune → structure pipeline on a schedule.
 // It's a long-running process (PM2 keeps it alive) whose only job is to fire the
 // nightly batch — kept separate from the web app and the responsive Telegram bot
 // so the heavy, bursty scrape can't degrade either.
@@ -15,15 +15,26 @@ import { spawn } from "node:child_process";
 import { Cron } from "croner";
 
 const TZ = "Africa/Addis_Ababa";
-const SCHEDULE = process.env.WORKER_CRON ?? "0 2 * * *"; // 02:00 EAT daily
+// 12:00 EAT = 09:00 UTC — deliberately off Google's US-peak demand window
+// (~14:00–23:00 UTC), when Gemini free-tier 503s are worst. The scrape is a slow,
+// polite crawl regardless of hour, so this trades a little ethiongojobs off-peak
+// for far fewer structurer 503s. Override with WORKER_CRON.
+const SCHEDULE = process.env.WORKER_CRON ?? "0 12 * * *";
 const STEP_TIMEOUT_MS = Number(process.env.WORKER_STEP_TIMEOUT_MS ?? 30 * 60 * 1000);
 const HEALTHCHECK_URL = process.env.WORKER_HEALTHCHECK_URL; // e.g. Healthchecks.io ping URL
+// Fast per-deadline deactivation, far more often than the nightly pipeline, so
+// the board never shows a closed listing for more than a few hours.
+const CLEANUP_SCHEDULE = process.env.WORKER_CLEANUP_CRON ?? "0 */3 * * *"; // every 3h
 
 // The pipeline, in order. Each is an existing, tested workspace script.
 const STEPS: Array<{ name: string; args: string[] }> = [
   { name: "scrape", args: ["--filter", "@internit/scraper", "scrape:orgs", "--", "--save", "--max", "20"] },
   { name: "dedup", args: ["--filter", "@internit/scraper", "dedup", "--", "--apply"] },
   { name: "prune", args: ["--filter", "@internit/scraper", "prune:expired", "--", "--apply"] },
+  // Structure the fresh listings end-to-end (clean summary + sections, repaired
+  // deadline/pay) — paced to the Gemini free-tier limits. Runs last, on the
+  // surviving active listings; already-structured (unchanged) ones are skipped.
+  { name: "structure", args: ["--filter", "@internit/scraper", "backfill:structure", "--", "--repair-columns", "--limit", "500"] },
 ];
 
 let running = false;
@@ -49,6 +60,20 @@ async function runPipeline(): Promise<void> {
     await ping("/fail");
   } finally {
     running = false;
+  }
+}
+
+// Lightweight cleanup tick — one indexed UPDATE, no Gemini. Skipped while the
+// heavy pipeline is mid-run to avoid contention.
+async function runCleanup(): Promise<void> {
+  if (running) {
+    log("pipeline running — skipping cleanup tick");
+    return;
+  }
+  try {
+    await runStep({ name: "deactivate-expired", args: ["--filter", "@internit/scraper", "deactivate:expired"] });
+  } catch (err) {
+    log(`cleanup FAILED: ${err instanceof Error ? err.message : String(err)}`);
   }
 }
 
@@ -89,5 +114,8 @@ if (process.argv.includes("--now")) {
   process.exit(0);
 } else {
   const job = new Cron(SCHEDULE, { timezone: TZ }, runPipeline);
-  log(`scheduled "${SCHEDULE}" (${TZ}); next run ${job.nextRun()?.toISOString() ?? "—"}`);
+  const cleanup = new Cron(CLEANUP_SCHEDULE, { timezone: TZ }, runCleanup);
+  log(
+    `scheduled pipeline "${SCHEDULE}" (next ${job.nextRun()?.toISOString() ?? "—"}) + cleanup "${CLEANUP_SCHEDULE}" (next ${cleanup.nextRun()?.toISOString() ?? "—"}) (${TZ})`,
+  );
 }

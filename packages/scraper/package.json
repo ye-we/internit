@@ -15,8 +15,10 @@
     "scrape:orgs": "tsx src/run-orgs.ts",
     "inspect:structure": "tsx src/inspect-structure.ts",
     "backfill:structure": "tsx src/backfill-structure.ts",
+    "backfill:apply-url": "tsx src/backfill-apply-url.ts",
     "backfill:generic": "tsx src/backfill-generic.ts",
     "prune:expired": "tsx src/prune-expired.ts",
+    "deactivate:expired": "tsx src/deactivate-expired.ts",
     "dedup": "tsx src/dedup-run.ts"
   },
   "dependencies": {

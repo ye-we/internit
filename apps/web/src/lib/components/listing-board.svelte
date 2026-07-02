@@ -94,6 +94,18 @@
     filteredListings.find((l) => l.id === selectedId) ?? filteredListings[0],
   );
 
+  // Apply target: a direct link when we have one, else a mailto when the org
+  // applies by email, else the source page.
+  const applyHref = $derived(
+    selected?.applyUrl ??
+      (selected?.applyEmail
+        ? `mailto:${selected.applyEmail}?subject=${encodeURIComponent(`Application — ${selected.title}`)}`
+        : selected?.sourceUrl),
+  );
+  const applyLabel = $derived(
+    selected?.applyUrl ? "Apply at source" : selected?.applyEmail ? "Apply by email" : "Open source",
+  );
+
   const summary = $derived.by(() => {
     const total = filteredListings.length;
     const avgFit = total
@@ -433,12 +445,12 @@
               class="mt-5 inline-flex h-9 overflow-hidden rounded-md border border-[#b8956a]/40"
             >
               <a
-                href={selected.sourceUrl}
+                href={applyHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="flex h-full items-center bg-[#5a4226] px-4 text-[13px] font-semibold text-[#f8efde] hover:bg-[#7a5631]"
               >
-                Open source
+                {applyLabel}
               </a>
               <span
                 class="flex h-full items-center justify-center border-l border-[#b8956a]/40 px-3 text-neutral-700 hover:bg-[#b8956a]/25"
@@ -464,25 +476,63 @@
               </button>
             </div>
 
-            <section class="mt-10 max-w-3xl">
-              <h3
-                class="text-[10.5px] font-semibold tracking-[0.08em] text-neutral-600"
-              >
-                SOURCE TEXT
-              </h3>
-              {#if selected.sourceHtml}
-                <!-- sanitized server-side in mapListing() -->
-                <div
-                  class="prose prose-sm prose-neutral mt-3 max-w-none text-[14px] leading-7 text-neutral-800 prose-headings:text-[14px] prose-headings:font-semibold prose-a:text-neutral-900"
+            {#if selected.applyUrl || selected.applyEmail}
+              <p class="mt-2 text-[11.5px] text-neutral-500">
+                {selected.applyUrl ? "Applies directly at the source." : "Applies by email."} Listing via
+                <a
+                  href={selected.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline decoration-[#b8956a]/60 underline-offset-2 hover:text-neutral-800"
+                  >{selected.source.toLowerCase()}</a
+                >.
+              </p>
+            {/if}
+
+            {#if selected.sections?.length}
+              <!-- Cleaned reader mode: the structurer's sections, not the raw dump. -->
+              <section class="mt-9 max-w-3xl">
+                {#each selected.sections as section}
+                  <h3
+                    class="mt-7 font-serif text-[19px] leading-snug font-semibold tracking-tight text-neutral-900 first:mt-0"
+                  >
+                    {section.title}
+                  </h3>
+                  {#each section.paragraphs as para}
+                    <p class="mt-2.5 text-[14px] leading-7 text-neutral-800">{para}</p>
+                  {/each}
+                  {#if section.bullets.length}
+                    <ul
+                      class="mt-2.5 list-disc space-y-1.5 pl-5 text-[14px] leading-7 text-neutral-800 marker:text-[#b8956a]"
+                    >
+                      {#each section.bullets as bullet}
+                        <li>{bullet}</li>
+                      {/each}
+                    </ul>
+                  {/if}
+                {/each}
+              </section>
+            {:else}
+              <section class="mt-10 max-w-3xl">
+                <h3
+                  class="text-[10.5px] font-semibold tracking-[0.08em] text-neutral-600"
                 >
-                  {@html selected.sourceHtml}
-                </div>
-              {:else}
-                <p class="mt-3 text-[14px] leading-7 text-neutral-800">
-                  {selected.sourceText}
-                </p>
-              {/if}
-            </section>
+                  SOURCE TEXT
+                </h3>
+                {#if selected.sourceHtml}
+                  <!-- sanitized server-side in mapListing() -->
+                  <div
+                    class="prose prose-sm prose-neutral mt-3 max-w-none text-[14px] leading-7 text-neutral-800 prose-headings:text-[14px] prose-headings:font-semibold prose-a:text-neutral-900"
+                  >
+                    {@html selected.sourceHtml}
+                  </div>
+                {:else}
+                  <p class="mt-3 text-[14px] leading-7 text-neutral-800">
+                    {selected.sourceText}
+                  </p>
+                {/if}
+              </section>
+            {/if}
           {:else}
             <div class="flex h-full items-center justify-center">
               <span class="font-serif text-[15px] text-neutral-500 italic"

@@ -7,7 +7,25 @@ import type { ScrapedListing } from "./index.js";
 const DEFAULT_MODEL = "gemini-2.5-flash-lite";
 const DEFAULT_MAX_INPUT_CHARS = 12_000;
 const DEFAULT_TIMEOUT_MS = 90_000;
-const DEFAULT_RETRIES = 2;
+const DEFAULT_RETRIES = 5;
+
+// Free tier allows 15 requests/min; pace to ≤12/min so a burst never trips the
+// RPM limit, and count requests so a run can report how close it came to the
+// 1,500/day cap. Module-global: one structurer process = one paced request stream.
+const MIN_REQUEST_INTERVAL_MS = Number(process.env.STRUCTURER_MIN_INTERVAL_MS ?? 5_000);
+let lastRequestAt = 0;
+let geminiRequestCount = 0;
+
+export function getGeminiRequestCount(): number {
+  return geminiRequestCount;
+}
+
+async function throttle(): Promise<void> {
+  const wait = lastRequestAt + MIN_REQUEST_INTERVAL_MS - Date.now();
+  if (wait > 0) await sleep(wait);
+  lastRequestAt = Date.now();
+  geminiRequestCount += 1;
+}
 
 export async function structureListing(
   listing: ScrapedListing,
@@ -59,6 +77,7 @@ async function structureBatchWithGemini(
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
 
     try {
+      await throttle();
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -206,7 +225,8 @@ function retryDelayMs(status: number, body: string, attempt: number): number | n
   if (body.includes("GenerateRequestsPerDay")) return null;
   const retryInfo = /"retryDelay"\s*:\s*"(\d+)s"/.exec(body);
   if (retryInfo?.[1]) return (Number(retryInfo[1]) + 1) * 1000;
-  return Math.min(60_000, 5_000 * 2 ** attempt);
+  // Exponential backoff with jitter so retries don't stampede in lockstep.
+  return Math.min(60_000, 5_000 * 2 ** attempt) + Math.floor(Math.random() * 1000);
 }
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));

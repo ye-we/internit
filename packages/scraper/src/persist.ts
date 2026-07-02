@@ -230,6 +230,7 @@ async function upsertBatch(
         source: item.source,
         sourceUrl: item.sourceUrl,
         sourceId: item.sourceId,
+        applyUrl: item.applyUrl ?? null,
         orgName: item.orgName,
         orgSlug: item.orgSlug ?? matchOrgSlug(item.orgName, orgRows),
         title: item.title,
@@ -255,6 +256,7 @@ async function upsertBatch(
           target: listings.sourceUrl,
           set: {
             sourceId: sql`excluded.source_id`,
+            applyUrl: sql`excluded.apply_url`,
             orgName: sql`excluded.org_name`,
             orgSlug: sql`excluded.org_slug`,
             title: sql`excluded.title`,

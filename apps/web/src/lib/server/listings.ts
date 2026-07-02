@@ -21,7 +21,9 @@ export const listingColumns = {
   descriptionText: true,
   descriptionHtml: true,
   sourceUrl: true,
+  applyUrl: true,
   scrapedAt: true,
+  raw: true,
 } as const;
 
 export type ListingFields = {
@@ -39,8 +41,41 @@ export type ListingFields = {
   descriptionText: string;
   descriptionHtml: string;
   sourceUrl: string;
+  applyUrl: string | null;
   scrapedAt: Date;
+  raw: unknown;
 };
+
+export type ReaderSection = { title: string; paragraphs: string[]; bullets: string[] };
+
+// The structurer's cleaned reader-mode content lives in raw.structured.data.
+// Pull the sections (and how-to-apply) so the detail view can render the tidy
+// version instead of the raw scraped wall of text. Returns null when unstructured.
+function readStructured(
+  raw: unknown,
+): { sections: ReaderSection[]; howToApply: string | null; applyEmail: string | null } | null {
+  const data = (raw as { structured?: { data?: unknown } } | null)?.structured?.data;
+  if (!data || typeof data !== "object") return null;
+  const d = data as { sections?: unknown; how_to_apply?: unknown; application_email?: unknown };
+  const sections: ReaderSection[] = Array.isArray(d.sections)
+    ? d.sections
+        .map((s) => {
+          const sec = (s ?? {}) as { title?: unknown; paragraphs?: unknown; bullets?: unknown };
+          return {
+            title: typeof sec.title === "string" ? sec.title : "",
+            paragraphs: Array.isArray(sec.paragraphs) ? sec.paragraphs.filter((p): p is string => typeof p === "string") : [],
+            bullets: Array.isArray(sec.bullets) ? sec.bullets.filter((b): b is string => typeof b === "string") : [],
+          };
+        })
+        .filter((s) => s.title || s.paragraphs.length || s.bullets.length)
+    : [];
+  if (sections.length === 0) return null;
+  return {
+    sections,
+    howToApply: typeof d.how_to_apply === "string" ? d.how_to_apply : null,
+    applyEmail: typeof d.application_email === "string" ? d.application_email : null,
+  };
+}
 
 const shortDate = (d: Date) =>
   d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -99,6 +134,7 @@ function toSourceHtml(html: string, text: string): string {
 }
 
 export function mapListing(l: ListingFields) {
+  const reader = readStructured(l.raw);
   return {
     id: l.id,
     source: l.source.toUpperCase(),
@@ -113,7 +149,11 @@ export function mapListing(l: ListingFields) {
     sourceText: l.descriptionText,
     sourceHtml: toSourceHtml(l.descriptionHtml, l.descriptionText),
     sourceUrl: l.sourceUrl,
+    applyUrl: l.applyUrl,
+    applyEmail: reader?.applyEmail ?? null,
     scrapedAt: shortDate(l.scrapedAt),
+    sections: reader?.sections ?? null,
+    howToApply: reader?.howToApply ?? null,
   };
 }
 

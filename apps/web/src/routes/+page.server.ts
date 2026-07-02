@@ -11,8 +11,11 @@ import {
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const load: PageServerLoad = async ({ request, url }) => {
+  // Active AND not past its deadline — the deadline guard means a freshly-closed
+  // listing drops off immediately, even between cleanup-cron ticks.
   const rows = await db.query.listings.findMany({
-    where: (l, { eq }) => eq(l.status, "active"),
+    where: (l, { and, eq, or, isNull, gte }) =>
+      and(eq(l.status, "active"), or(isNull(l.deadline), gte(l.deadline, new Date()))),
     orderBy: (l, { asc, desc }) => [desc(l.fitScore), asc(l.deadline)],
     limit: 50,
     columns: listingColumns,

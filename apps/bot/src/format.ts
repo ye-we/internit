@@ -53,7 +53,9 @@ export function formatChannelPost(l: Listing, siteUrl: string): string {
   }
 
   const links = [`<a href="${e(siteUrl)}/?listing=${l.id}">Read</a>`];
-  const applyUrl = str(s?.application_url);
+  // Prefer the scraper's deterministic apply_url (parsed from the body) over the
+  // LLM's application_url.
+  const applyUrl = str(l.applyUrl) ?? str(s?.application_url);
   if (applyUrl && /^https?:\/\//i.test(applyUrl)) {
     links.push(`<a href="${e(applyUrl)}">Apply</a>`);
   }
