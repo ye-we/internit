@@ -2,9 +2,8 @@
 // Secretariat; per-org runs filter by department so UNECA, OHCHR, DPPA, DPO
 // can each be dispatched without refetching.
 
-import * as cheerio from "cheerio";
 import type { PoliteFetcher } from "../fetcher.js";
-import { cleanDescriptionHtml, collapse } from "../html.js";
+import { cleanDescriptionHtml, collapse, htmlToText } from "../html.js";
 import type { ScrapedListing } from "../index.js";
 import type { Adapter, AdapterConfig, AdapterOpts } from "./types.js";
 import { ethiopiaAccess } from "./types.js";
@@ -104,7 +103,11 @@ function parseRow(row: UnCareerRow, config: AdapterConfig): ScrapedListing {
   const descriptionHtml = cleanDescriptionHtml(row.jobDescription, {
     resolveUrl: (href) => new URL(href, "https://careers.un.org").href,
   });
-  const descriptionText = collapse(cheerio.load(descriptionHtml).text());
+  // Run htmlToText on the RAW jobDescription, not the sanitized descriptionHtml:
+  // cleanDescriptionHtml unwraps the block <div>s, so a bare `.text()` here fuses
+  // adjacent fields ("Work Location"+"Addis Ababa"). htmlToText inserts block
+  // boundaries first — same contract the SuccessFactors adapter follows.
+  const descriptionText = htmlToText(row.jobDescription);
   const title = collapse(row.postingTitle || row.jobTitle);
   const location = (row.dutyStation ?? [])
     .map((station) => collapse(station.description))

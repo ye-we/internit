@@ -1,7 +1,9 @@
+import { renderListingCard } from "@internit/card";
 import { eq, getDb, inArray, listings, orgs, subscribers } from "@internit/db";
 import type { Context, Telegraf } from "telegraf";
-import { formatSavedLine } from "./format.js";
+import { formatChannelPost, formatSavedLine } from "./format.js";
 import type { BotConfig } from "./jobs.js";
+import { sampleListings } from "./samples.js";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -113,6 +115,26 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
   bot.command("digest", async (ctx) => {
     await upsertSubscriber(ctx);
     await ctx.reply("Weekly digest opt-in is coming soon.");
+  });
+
+  // Dev utility: preview the channel card + caption on dummy listings, sent to
+  // whoever asks (their own DM) — never the channel. `/test_card 3` → 3 samples.
+  bot.command("test_card", async (ctx) => {
+    const samples = sampleListings();
+    const requested = parseInt(ctx.payload.trim(), 10);
+    const n = Math.min(Number.isFinite(requested) && requested > 0 ? requested : 1, samples.length);
+    await ctx.reply(`Rendering ${n} test card${n > 1 ? "s" : ""}…`);
+    for (const l of samples.slice(0, n)) {
+      try {
+        const png = await renderListingCard(l);
+        await ctx.replyWithPhoto(
+          { source: png },
+          { caption: formatChannelPost(l, config.siteUrl), parse_mode: "HTML" },
+        );
+      } catch (err) {
+        await ctx.reply(`Render failed: ${err instanceof Error ? err.message : err}`);
+      }
+    }
   });
 }
 

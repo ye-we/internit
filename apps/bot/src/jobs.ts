@@ -4,6 +4,7 @@
 // Coordinated with the worker purely through the database — the worker writes
 // listings, the bot polls for ones it hasn't broadcast yet.
 
+import { renderListingCard } from "@internit/card";
 import { and, eq, getDb, gte, inArray, listings, subscribers } from "@internit/db";
 import { Cron } from "croner";
 import { Markup, type Telegraf } from "telegraf";
@@ -54,12 +55,30 @@ async function postNewListings(bot: Telegraf, { channelId, siteUrl }: BotConfig)
       await markPosted(l.id);
       continue;
     }
+    const caption = formatChannelPost(l, siteUrl);
+    const replyMarkup = remindButton(l, bot.botInfo?.username);
     try {
-      await bot.telegram.sendMessage(channelId, formatChannelPost(l, siteUrl), {
-        parse_mode: "HTML",
-        link_preview_options: { is_disabled: true },
-        reply_markup: remindButton(l, bot.botInfo?.username),
-      });
+      // Editorial card as the lead image; caption carries the full post. If the
+      // render ever throws, fall back to a plain text post so a rendering bug can
+      // never stall the broadcast queue.
+      try {
+        const png = await renderListingCard(l);
+        await bot.telegram.sendPhoto(
+          channelId,
+          { source: png },
+          { caption, parse_mode: "HTML", reply_markup: replyMarkup },
+        );
+      } catch (renderErr) {
+        console.error(
+          `[bot] card render failed for ${l.id}, sending text:`,
+          renderErr instanceof Error ? renderErr.message : renderErr,
+        );
+        await bot.telegram.sendMessage(channelId, caption, {
+          parse_mode: "HTML",
+          link_preview_options: { is_disabled: true },
+          reply_markup: replyMarkup,
+        });
+      }
       await markPosted(l.id);
     } catch (err) {
       console.error(`[bot] channel post failed for ${l.id}:`, err instanceof Error ? err.message : err);

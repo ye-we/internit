@@ -17,30 +17,49 @@ function firstSentences(text: string, n: number): string {
   return sentences.slice(0, n).join(" ").trim().slice(0, 280);
 }
 
-// Channel broadcast (CLAUDE.md): org (bold), role, deadline, fit badge,
-// 2-sentence snippet, Read link, source attribution. Restrained, English.
+// Fields the caption reads from the Gemini structurer's output at
+// raw.structured.data. Loosely typed on purpose — raw is jsonb.
+type StructuredCaption = { summary?: unknown; application_url?: unknown };
+function structuredData(l: Listing): StructuredCaption | null {
+  const data = (l.raw as { structured?: { data?: unknown } } | null)?.structured?.data;
+  return data && typeof data === "object" ? (data as StructuredCaption) : null;
+}
+
+function str(v: unknown): string | null {
+  return typeof v === "string" && v.trim() ? v.trim() : null;
+}
+
+function fmtDate(d: Date): string {
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+// Channel caption. The card image already carries org, title, deadline pill,
+// fit, location and tags, so the caption stays lean: it adds the one-line
+// summary, a human deadline, and the apply/read/source links — no duplication.
+// Restrained, English (CLAUDE.md). Kept well under Telegram's 1024-char photo
+// caption limit.
 export function formatChannelPost(l: Listing, siteUrl: string): string {
   const e = escapeHtml;
-  const lines: string[] = [`<b>${e(l.orgName)}</b>`, e(l.title)];
+  const s = structuredData(l);
+  const lines: string[] = [`<b>${e(l.orgName)}</b>`, e(l.title), ""];
 
-  const meta: string[] = [];
-  meta.push(l.isRemote ? "Remote" : (l.location ?? "").trim());
+  const summary = (str(s?.summary) ?? firstSentences(l.descriptionText, 2)).slice(0, 300);
+  if (summary) lines.push(e(summary), "");
+
   if (l.deadline) {
     const d = daysUntil(l.deadline);
-    meta.push(`Deadline ${l.deadline.toISOString().slice(0, 10)}${d !== null && d >= 0 ? ` (${d}d left)` : ""}`);
+    const when = d === null || d < 0 ? "" : d === 0 ? " (today)" : ` (${d}d left)`;
+    lines.push(e(`Deadline ${fmtDate(l.deadline)}${when}`));
   }
-  const metaLine = meta.filter(Boolean).join(" · ");
-  if (metaLine) lines.push(e(metaLine));
 
-  const pay = l.isPaid === true ? " · Paid" : l.isPaid === false ? " · Unpaid" : "";
-  lines.push(`Fit ${l.fitScore}/100${pay}`);
+  const links = [`<a href="${e(siteUrl)}/?listing=${l.id}">Read</a>`];
+  const applyUrl = str(s?.application_url);
+  if (applyUrl && /^https?:\/\//i.test(applyUrl)) {
+    links.push(`<a href="${e(applyUrl)}">Apply</a>`);
+  }
+  links.push(`<a href="${e(l.sourceUrl)}">Source</a>`);
+  lines.push(links.join(" · "));
 
-  const snippet = firstSentences(l.descriptionText, 2);
-  if (snippet) lines.push(e(snippet));
-
-  lines.push(
-    `<a href="${e(siteUrl)}/?listing=${l.id}">Read</a> · <a href="${e(l.sourceUrl)}">Source</a>`,
-  );
   return lines.join("\n");
 }
 
