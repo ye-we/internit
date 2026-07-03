@@ -217,57 +217,16 @@ export async function renderListingCard(input: CardInput): Promise<Buffer> {
 // ---------------------------------------------------------------------------
 
 export type BrandCardInput = {
-  statement: string; // the big serif line — the card's whole voice
-  stamp?: string; // cream chip top-right (mirrors the deadline stamp)
-  meta?: string; // quiet line above the hairline
-  tags?: string; // bottom-left, opposite the mark
+  title?: string; // wordmark, serif — defaults to "Internit"
+  subtitle?: string; // one quiet descriptor under it — defaults to "internship aggregator"
 };
 
 const CREAM_MUTED = "rgba(246,236,215,0.68)";
 const CREAM_FRAME = "rgba(246,236,215,0.26)";
-const CREAM_LINE = "rgba(246,236,215,0.4)";
-const LOGO_CREAM = logoPng(CREAM, 160); // 2× the display width, for crispness
+const LOGO_CREAM = logoPng(CREAM, 400); // 2× the display width, for crispness
 
-// Same skeleton as the listing card — masthead row, big serif statement, meta,
-// hairline, tags + mark — with the palette inverted, so the welcome card reads
-// as the front page and every listing card as an inside page.
+// The profile picture, as a card: mark, wordmark, descriptor. Nothing else.
 function buildBrandTree(input: BrandCardInput): Node {
-  const topRow: Node[] = [
-    h("div", { display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: 3, color: CREAM_MUTED }, "INTERNIT"),
-  ];
-  if (input.stamp) {
-    topRow.push(
-      h(
-        "div",
-        {
-          display: "flex",
-          fontSize: 22,
-          fontWeight: 700,
-          letterSpacing: 2,
-          color: BROWN,
-          backgroundColor: CREAM,
-          padding: "10px 18px",
-          borderRadius: 2,
-        },
-        input.stamp.toUpperCase(),
-      ),
-    );
-  }
-
-  const bottom: Node[] = [];
-  if (input.meta) {
-    bottom.push(
-      h("div", { display: "flex", fontSize: 30, fontWeight: 500, color: CREAM_MUTED, marginBottom: 22 }, input.meta),
-    );
-  }
-  bottom.push(
-    h("div", { display: "flex", height: 1, backgroundColor: CREAM_LINE, marginBottom: 22 }, ""),
-    h("div", { display: "flex", justifyContent: "space-between", alignItems: "center" }, [
-      h("div", { display: "flex", fontSize: 26, fontWeight: 400, color: CREAM_MUTED }, input.tags ?? ""),
-      img(LOGO_CREAM, 80, 58),
-    ]),
-  );
-
   return h(
     "div",
     { display: "flex", width: WIDTH, height: HEIGHT, padding: 24, backgroundColor: BROWN, fontFamily: SANS },
@@ -278,28 +237,38 @@ function buildBrandTree(input: BrandCardInput): Node {
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
           border: `1.5px solid ${CREAM_FRAME}`,
           borderRadius: 4,
-          padding: "40px 46px",
         },
         [
-          h("div", { display: "flex", justifyContent: "space-between", alignItems: "center" }, topRow),
-          h("div", { display: "flex", flexGrow: 1, alignItems: "center", paddingTop: 12, paddingBottom: 12 }, [
-            h(
-              "div",
-              {
-                display: "flex",
-                fontFamily: SERIF,
-                fontWeight: 600,
-                fontSize: 74,
-                letterSpacing: -0.5,
-                lineHeight: 1.1,
-                color: CREAM,
-              },
-              input.statement,
-            ),
-          ]),
-          h("div", { display: "flex", flexDirection: "column" }, bottom),
+          img(LOGO_CREAM, 200, 145),
+          h(
+            "div",
+            {
+              display: "flex",
+              fontFamily: SERIF,
+              fontWeight: 600,
+              fontSize: 72,
+              letterSpacing: -0.5,
+              color: CREAM,
+              marginTop: 36,
+            },
+            input.title ?? "Internit",
+          ),
+          h(
+            "div",
+            {
+              display: "flex",
+              fontSize: 26,
+              fontWeight: 500,
+              letterSpacing: 4,
+              color: CREAM_MUTED,
+              marginTop: 16,
+            },
+            (input.subtitle ?? "internship aggregator").toUpperCase(),
+          ),
         ],
       ),
     ],

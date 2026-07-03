@@ -168,12 +168,8 @@ async function sendWelcome(ctx: Context): Promise<void> {
       await ctx.replyWithPhoto(welcomeFileId, opts);
       return;
     }
-    welcomePng ??= await renderBrandCard({
-      statement: "Internships in governance, rights & peace — found for you.",
-      stamp: "For social-studies students",
-      meta: "Scraped daily · filtered by field · deadline reminders",
-      tags: "political science · IR · human rights · development",
-    });
+    // Mark, wordmark, descriptor — the profile picture as a card.
+    welcomePng ??= await renderBrandCard({});
     const msg = await ctx.replyWithPhoto({ source: welcomePng }, opts);
     welcomeFileId = msg.photo?.at(-1)?.file_id ?? null;
   } catch (err) {
