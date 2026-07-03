@@ -1,4 +1,4 @@
-import { renderListingCard } from "@internit/card";
+import { renderBrandCard, renderListingCard } from "@internit/card";
 import { and, eq, getDb, getTableColumns, inArray, listings, orgs, sql, subscribers, type Listing } from "@internit/db";
 import { Markup, type Context, type Telegraf } from "telegraf";
 import { formatChannelPost, formatSaveConfirmation, formatSavedLine } from "./format.js";
@@ -43,7 +43,7 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
       }
     }
     await upsertSubscriber(ctx);
-    await ctx.replyWithHTML(WELCOME);
+    await sendWelcome(ctx);
   });
 
   bot.help((ctx) => ctx.replyWithHTML(HELP));
@@ -155,6 +155,32 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
   });
 }
 
+// Welcome banner: the inverted brand card (matches the bot's profile picture).
+// Rendered once per process, then reused via Telegram's file_id — the render
+// only ever happens for the first /start after a restart.
+let welcomePng: Buffer | null = null;
+let welcomeFileId: string | null = null;
+
+async function sendWelcome(ctx: Context): Promise<void> {
+  const opts = { caption: WELCOME, parse_mode: "HTML" as const };
+  try {
+    if (welcomeFileId) {
+      await ctx.replyWithPhoto(welcomeFileId, opts);
+      return;
+    }
+    welcomePng ??= await renderBrandCard({
+      title: "Internit",
+      subtitle: "Internships for Ethiopian social-studies students",
+      tagline: "political science · IR · governance · human rights · peace & conflict",
+    });
+    const msg = await ctx.replyWithPhoto({ source: welcomePng }, opts);
+    welcomeFileId = msg.photo?.at(-1)?.file_id ?? null;
+  } catch (err) {
+    console.error("[bot] welcome card failed, sending text:", err instanceof Error ? err.message : err);
+    await ctx.replyWithHTML(WELCOME);
+  }
+}
+
 async function upsertSubscriber(ctx: Context) {
   const db = getDb();
   const chatId = BigInt(ctx.chat!.id);
@@ -223,7 +249,9 @@ async function replySaveResult(ctx: Context, res: SaveResult, config: BotConfig)
   ]).reply_markup;
   try {
     await sendListingCard(ctx.telegram, ctx.chat!.id, l, { caption, reply_markup: openButton });
-  } catch {
+  } catch (err) {
+    // Visible in pm2 logs — a silent text fallback would hide render/send bugs.
+    console.error(`[bot] save card failed for ${l.id}, sending text:`, err instanceof Error ? err.message : err);
     await ctx.reply(caption, {
       parse_mode: "HTML",
       link_preview_options: { is_disabled: true },

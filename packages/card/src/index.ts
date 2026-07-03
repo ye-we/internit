@@ -209,3 +209,90 @@ export async function renderListingCard(input: CardInput): Promise<Buffer> {
   });
   return resvg.render().asPng();
 }
+
+// ---------------------------------------------------------------------------
+// Brand card — the inverted counterpart of the listing card, matching the bot's
+// profile picture: brown ground, cream mark and type. Used for non-listing
+// moments (the bot's welcome message; reusable as a generic OG image).
+// ---------------------------------------------------------------------------
+
+export type BrandCardInput = { title: string; subtitle?: string; tagline?: string };
+
+const CREAM_MUTED = "rgba(246,236,215,0.68)";
+const CREAM_FRAME = "rgba(246,236,215,0.26)";
+const CREAM_LINE = "rgba(246,236,215,0.4)";
+const LOGO_CREAM = logoPng(CREAM, 340); // 2× the display width, for crispness
+
+function buildBrandTree(input: BrandCardInput): Node {
+  const inner: Node[] = [
+    img(LOGO_CREAM, 170, 123),
+    h(
+      "div",
+      {
+        display: "flex",
+        fontFamily: SERIF,
+        fontWeight: 600,
+        fontSize: 84,
+        letterSpacing: -1,
+        color: CREAM,
+        marginTop: 30,
+      },
+      input.title,
+    ),
+  ];
+  if (input.subtitle) {
+    inner.push(
+      h(
+        "div",
+        { display: "flex", fontSize: 32, fontWeight: 500, color: CREAM_MUTED, marginTop: 12 },
+        input.subtitle,
+      ),
+    );
+  }
+  if (input.tagline) {
+    inner.push(
+      h("div", { display: "flex", height: 1, width: 220, backgroundColor: CREAM_LINE, marginTop: 34 }, ""),
+      h(
+        "div",
+        {
+          display: "flex",
+          fontSize: 23,
+          fontWeight: 500,
+          letterSpacing: 2,
+          color: CREAM_MUTED,
+          marginTop: 34,
+        },
+        input.tagline.toUpperCase(),
+      ),
+    );
+  }
+  return h(
+    "div",
+    { display: "flex", width: WIDTH, height: HEIGHT, padding: 24, backgroundColor: BROWN, fontFamily: SANS },
+    [
+      h(
+        "div",
+        {
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          border: `1.5px solid ${CREAM_FRAME}`,
+          borderRadius: 4,
+        },
+        inner,
+      ),
+    ],
+  );
+}
+
+export async function renderBrandCard(input: BrandCardInput): Promise<Buffer> {
+  const svg = await satori(buildBrandTree(input) as never, { width: WIDTH, height: HEIGHT, fonts: FONTS });
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: WIDTH },
+    background: BROWN,
+    font: { fontFiles: FONT_FILES.map(fontFile), loadSystemFonts: false, defaultFontFamily: SANS },
+  });
+  return resvg.render().asPng();
+}

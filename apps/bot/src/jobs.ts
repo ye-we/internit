@@ -146,7 +146,8 @@ async function remindDm(
   const caption = formatReminder(l, siteUrl, window);
   try {
     await sendListingCard(bot.telegram, Number(chatId), l, { caption });
-  } catch {
+  } catch (err) {
+    console.error(`[bot] reminder card failed for ${l.id}, sending text:`, err instanceof Error ? err.message : err);
     await dm(bot, chatId, caption);
   }
 }
