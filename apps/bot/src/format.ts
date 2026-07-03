@@ -74,11 +74,54 @@ export function formatChannelPost(l: Listing, siteUrl: string): string {
   return lines.join("\n");
 }
 
-// Compact one-liner for /saved.
-export function formatSavedLine(l: Listing): string {
-  const d = daysUntil(l.deadline);
-  const when =
-    d === null ? "no deadline" : d < 0 ? "closed" : d === 0 ? "closes today" : `${d}d left`;
-  const loc = l.isRemote ? "Remote" : (l.location?.split(",")[0] ?? "—");
-  return `• <b>${escapeHtml(l.title)}</b> — ${escapeHtml(loc)} · ${when}`;
+// Deadline phrasing with a single restrained urgency marker: red only when it's
+// genuinely tight, nothing at all for rolling deadlines.
+export function deadlinePhrase(deadline: Date | null): string {
+  const d = daysUntil(deadline);
+  if (d === null) return "rolling deadline";
+  if (d < 0) return "closed";
+  if (d === 0) return "🔴 closes today";
+  if (d <= 3) return `🔴 ${d}d left`;
+  if (d <= 14) return `⏳ ${d}d left`;
+  return `${fmtDate(deadline!)} · ${d}d left`;
+}
+
+// One /saved row: numbered, title links to the board (tappable), location and
+// urgency underneath so rows scan as a column.
+export function formatSavedLine(l: Listing, index: number, siteUrl: string): string {
+  const loc = l.isRemote ? "Remote" : (l.location?.split(",")[0]?.trim() ?? "—");
+  return (
+    `${index}. <a href="${escapeHtml(siteUrl)}/?listing=${l.id}&amp;ref=tg-saved"><b>${escapeHtml(l.title.slice(0, 80))}</b></a>\n` +
+    `    ${escapeHtml(l.orgName.slice(0, 60))} · ${escapeHtml(loc)} · ${deadlinePhrase(l.deadline)}`
+  );
+}
+
+// Caption for the card photo sent when a listing is saved.
+export function formatSaveConfirmation(l: Listing): string {
+  const lines = [`✅ Saved — <b>${escapeHtml(l.title.slice(0, 120))}</b>`];
+  if (l.deadline) {
+    lines.push(`${deadlinePhrase(l.deadline)} · I'll remind you 24h &amp; 72h before it closes.`);
+  } else {
+    lines.push("Rolling deadline — no reminders needed, apply when ready.");
+  }
+  return lines.join("\n");
+}
+
+// Caption for the deadline-reminder card DM. Leads with the time pressure,
+// then hands the reader straight to the apply/read links.
+export function formatReminder(l: Listing, siteUrl: string, window: "24h" | "72h"): string {
+  const e = escapeHtml;
+  const s = structuredData(l);
+  const lines = [
+    `⏰ <b>Closes in ~${window}</b>`,
+    `<b>${e(l.orgName.slice(0, 120))}</b> — ${e(l.title.slice(0, 120))}`,
+    "",
+  ];
+  const links = [`<a href="${e(siteUrl)}/?listing=${l.id}&amp;ref=tg-reminder">Read</a>`];
+  const applyUrl = str(l.applyUrl) ?? str(s?.application_url);
+  if (applyUrl && applyUrl.length <= 512 && /^https?:\/\//i.test(applyUrl)) {
+    links.push(`<a href="${e(applyUrl)}">Apply now</a>`);
+  }
+  lines.push(links.join(" · "));
+  return lines.join("\n");
 }

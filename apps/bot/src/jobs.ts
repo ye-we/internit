@@ -4,11 +4,11 @@
 // Coordinated with the worker purely through the database — the worker writes
 // listings, the bot polls for ones it hasn't broadcast yet.
 
-import { renderListingCard } from "@internit/card";
-import { and, eq, getDb, gte, inArray, listings, subscribers } from "@internit/db";
+import { and, eq, getDb, gte, inArray, listings, subscribers, type Listing } from "@internit/db";
 import { Cron } from "croner";
 import { Markup, type Telegraf } from "telegraf";
-import { formatChannelPost } from "./format.js";
+import { formatChannelPost, formatReminder } from "./format.js";
+import { sendListingCard } from "./media.js";
 
 const CHANNEL_FIT_THRESHOLD = 70; // CLAUDE.md: fit ≥ 70 auto-posts
 
@@ -65,12 +65,9 @@ async function postNewListings(bot: Telegraf, { channelId, siteUrl }: BotConfig)
       let usePhoto = caption.length <= 1024;
       if (usePhoto) {
         try {
-          const png = await renderListingCard(l);
-          await bot.telegram.sendPhoto(
-            channelId,
-            { source: png },
-            { caption, parse_mode: "HTML", reply_markup: replyMarkup },
-          );
+          // Cached-file_id sender: renders + uploads the card once, then reuses
+          // Telegram's copy for reminders and save confirmations too.
+          await sendListingCard(bot.telegram, channelId, l, { caption, reply_markup: replyMarkup });
         } catch (renderErr) {
           if (isTelegramBadRequest(renderErr)) throw renderErr;
           console.error(
@@ -115,7 +112,7 @@ async function markPosted(id: string): Promise<void> {
   await getDb().update(listings).set({ postedToChannel: true }).where(eq(listings.id, id));
 }
 
-async function sendReminders(bot: Telegraf, _config: BotConfig): Promise<void> {
+async function sendReminders(bot: Telegraf, { siteUrl }: BotConfig): Promise<void> {
   const db = getDb();
   const subs = await db.select().from(subscribers);
   const now = Date.now();
@@ -129,25 +126,41 @@ async function sendReminders(bot: Telegraf, _config: BotConfig): Promise<void> {
       // 3h windows on a 6h cadence → each deadline crosses a window once, so no
       // duplicate reminders. (A proper sent-log would harden against missed ticks.)
       if (sub.notify24h && hours > 21 && hours <= 24) {
-        await dm(bot, sub.chatId, `⏰ <b>${escape(l.title)}</b> closes in ~24h.`);
+        await remindDm(bot, sub.chatId, l, siteUrl, "24h");
       } else if (sub.notify72h && hours > 69 && hours <= 72) {
-        await dm(bot, sub.chatId, `⏰ <b>${escape(l.title)}</b> closes in ~72h.`);
+        await remindDm(bot, sub.chatId, l, siteUrl, "72h");
       }
     }
   }
 }
 
+// Reminder DM: the listing's card image (usually a cached file_id — free) with
+// an urgency caption. Falls back to plain text if the card can't be sent.
+async function remindDm(
+  bot: Telegraf,
+  chatId: bigint,
+  l: Listing,
+  siteUrl: string,
+  window: "24h" | "72h",
+): Promise<void> {
+  const caption = formatReminder(l, siteUrl, window);
+  try {
+    await sendListingCard(bot.telegram, Number(chatId), l, { caption });
+  } catch {
+    await dm(bot, chatId, caption);
+  }
+}
+
 async function dm(bot: Telegraf, chatId: bigint, html: string): Promise<void> {
   try {
-    await bot.telegram.sendMessage(Number(chatId), html, { parse_mode: "HTML" });
+    await bot.telegram.sendMessage(Number(chatId), html, {
+      parse_mode: "HTML",
+      link_preview_options: { is_disabled: true },
+    });
   } catch (err) {
     // Blocked/deleted chats are expected — don't let one kill the batch.
     console.error(`[bot] DM to ${chatId} failed:`, err instanceof Error ? err.message : err);
   }
-}
-
-function escape(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function logErr(job: string) {

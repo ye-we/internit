@@ -1,31 +1,34 @@
 import { renderListingCard } from "@internit/card";
-import { and, eq, getDb, getTableColumns, inArray, listings, orgs, sql, subscribers } from "@internit/db";
-import type { Context, Telegraf } from "telegraf";
-import { formatChannelPost, formatSavedLine } from "./format.js";
+import { and, eq, getDb, getTableColumns, inArray, listings, orgs, sql, subscribers, type Listing } from "@internit/db";
+import { Markup, type Context, type Telegraf } from "telegraf";
+import { formatChannelPost, formatSaveConfirmation, formatSavedLine } from "./format.js";
 import type { BotConfig } from "./jobs.js";
+import { sendListingCard } from "./media.js";
 import { sampleListings } from "./samples.js";
 import { trackTg } from "./track.js";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const WELCOME =
-  "Internships for Ethiopian social-studies students — political science, IR, governance, " +
-  "human rights, peace &amp; conflict, development.\n\n" +
-  "• /saved — your saved listings + deadlines\n" +
-  "• /save &lt;id&gt; — save a listing for reminders\n" +
-  "• /filter — set field / paid / remote preferences\n" +
-  "• /orgs — browse orgs to contact directly\n" +
-  "• /help — all commands\n\n" +
-  "New listings post to the channel as they're found. Save the ones you like and I'll remind you before they close.";
+  "<b>Internit</b> — internships for Ethiopian social-studies students\n" +
+  "<i>political science · IR · governance · human rights · peace &amp; conflict · development</i>\n\n" +
+  "<blockquote>New listings post to the channel as they're found. Save the ones you like — " +
+  "I'll remind you 24h and 72h before they close.</blockquote>\n" +
+  "<b>Commands</b>\n" +
+  "/saved — your saved listings + deadlines\n" +
+  "/save &lt;id&gt; — save a listing for reminders\n" +
+  "/filter — field / paid / remote preferences\n" +
+  "/orgs — orgs worth contacting directly\n" +
+  "/help — everything else";
 
 const HELP =
-  "<b>Commands</b>\n" +
-  "/saved — your saved listings with days-until-deadline\n" +
-  "/save &lt;id&gt; — save a listing (id is on the listing page)\n" +
-  "/filter — adjust field / paid / remote preferences\n" +
-  "/orgs — browse the cold-outreach org directory\n" +
-  "/digest — weekly Friday digest (on/off)\n" +
-  "/help — this message";
+  "<b>Commands</b>\n\n" +
+  "/saved — your saved listings, soonest deadline first\n" +
+  "/save &lt;id&gt; — save a listing (or tap 🔔 under any channel post)\n" +
+  "/filter — field / paid / remote preferences\n" +
+  "/orgs — the cold-outreach directory: orgs that rarely post but take interns\n" +
+  "/digest — weekly Friday digest (coming soon)\n\n" +
+  "<i>Saved listings get a reminder 24h and 72h before they close.</i>";
 
 export function registerCommands(bot: Telegraf, config: BotConfig): void {
   bot.start(async (ctx) => {
@@ -35,15 +38,7 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
       const id = payload.slice(5);
       if (UUID_RE.test(id)) {
         const res = await saveListing(ctx, id, "deeplink");
-        if (res.status === "saved") {
-          await ctx.replyWithHTML(
-            `Saved <b>${escape(res.title)}</b>. I'll remind you 24h &amp; 72h before it closes — see all with /saved.`,
-          );
-        } else if (res.status === "capped") {
-          await ctx.reply(`You've hit the ${MAX_SAVED}-listing limit — prune some with /saved first.`);
-        } else {
-          await ctx.reply("That listing has closed, so there's nothing to remind you about.");
-        }
+        await replySaveResult(ctx, res, config);
         return;
       }
     }
@@ -60,13 +55,7 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
       return;
     }
     const res = await saveListing(ctx, id, "command");
-    if (res.status === "missing") {
-      await ctx.reply("Couldn't find that listing — it may have closed.");
-    } else if (res.status === "capped") {
-      await ctx.reply(`You've hit the ${MAX_SAVED}-listing limit — prune some with /saved first.`);
-    } else {
-      await ctx.replyWithHTML(`Saved <b>${escape(res.title)}</b>. I'll remind you before it closes.`);
-    }
+    await replySaveResult(ctx, res, config);
   });
 
   bot.command("saved", async (ctx) => {
@@ -85,10 +74,14 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
       await ctx.reply("Your saved listings have all closed.");
       return;
     }
-    // Chunked: 50 saves × ~100-char lines can clear Telegram's 4096 cap.
-    const lines = ["<b>Your saved listings</b>", ...open.map(formatSavedLine)];
-    for (let i = 0; i < lines.length; i += 30) {
-      await ctx.replyWithHTML(lines.slice(i, i + 30).join("\n"));
+    // Chunked: 50 saves × two-line entries can clear Telegram's 4096 cap.
+    const header = `📌 <b>Your saved listings</b> — ${open.length} open, soonest first\n`;
+    const lines = open.map((l, i) => formatSavedLine(l, i + 1, config.siteUrl));
+    for (let i = 0; i < lines.length; i += 15) {
+      await ctx.reply((i === 0 ? `${header}\n` : "") + lines.slice(i, i + 15).join("\n\n"), {
+        parse_mode: "HTML",
+        link_preview_options: { is_disabled: true },
+      });
     }
   });
 
@@ -96,11 +89,11 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
     const sub = await upsertSubscriber(ctx);
     const f = sub.filters as { fields?: string[]; paid_only?: boolean; remote_ok?: boolean };
     await ctx.replyWithHTML(
-      "<b>Your filters</b>\n" +
-        `Fields: ${f.fields?.length ? escape(f.fields.join(", ")) : "all"}\n` +
-        `Paid only: ${f.paid_only ? "yes" : "no"}\n` +
-        `Remote ok: ${f.remote_ok === false ? "no" : "yes"}\n\n` +
-        "Tap-to-edit filters are coming. For now, the channel posts everything that fits.",
+      "🎛 <b>Your filters</b>\n\n" +
+        `Fields — <b>${f.fields?.length ? escape(f.fields.join(", ")) : "all"}</b>\n` +
+        `Paid only — <b>${f.paid_only ? "yes" : "no"}</b>\n` +
+        `Remote ok — <b>${f.remote_ok === false ? "no" : "yes"}</b>\n\n` +
+        "<i>Tap-to-edit filters are coming. For now, the channel posts everything that fits.</i>",
     );
   });
 
@@ -117,10 +110,19 @@ export function registerCommands(bot: Telegraf, config: BotConfig): void {
       return;
     }
     const lines = dir.map((o) => {
-      const contact = o.email ? escape(o.email) : o.website ? escape(o.website) : "—";
-      return `• <b>${escape(o.name)}</b> — ${contact}`;
+      const name =
+        o.website && /^https?:\/\//i.test(o.website)
+          ? `<a href="${escape(o.website)}"><b>${escape(o.name)}</b></a>`
+          : `<b>${escape(o.name)}</b>`;
+      return `• ${name}${o.email ? ` — ${escape(o.email)}` : ""}`;
     });
-    await ctx.replyWithHTML(["<b>Orgs to contact directly</b>", ...lines].join("\n"));
+    await ctx.reply(
+      "🏛 <b>Orgs to contact directly</b>\n" +
+        "<i>They rarely post openings — a good email with your CV goes further than waiting.</i>\n\n" +
+        lines.join("\n") +
+        `\n\nFull directory with how-to-apply notes → ${escape(config.siteUrl)}/orgs`,
+      { parse_mode: "HTML", link_preview_options: { is_disabled: true } },
+    );
   });
 
   bot.command("digest", async (ctx) => {
@@ -168,12 +170,12 @@ async function upsertSubscriber(ctx: Context) {
   return sub!;
 }
 
-// Save a listing to a subscriber's reminder list. Returns the listing title,
-// or null if the listing no longer exists. Shared by /save and the web "remind
+// Save a listing to a subscriber's reminder list. Returns the full listing row
+// so the confirmation can show its card. Shared by /save and the web "remind
 // me" deep link (t.me/<bot>?start=save_<id>).
 const MAX_SAVED = 50;
 
-type SaveResult = { status: "saved"; title: string } | { status: "missing" } | { status: "capped" };
+type SaveResult = { status: "saved"; listing: Listing } | { status: "missing" } | { status: "capped" };
 
 async function saveListing(
   ctx: Context,
@@ -185,7 +187,7 @@ async function saveListing(
   // takedowns) and must not be retrievable by UUID, expired ones have nothing
   // to remind about.
   const [listing] = await db
-    .select({ title: listings.title })
+    .select()
     .from(listings)
     .where(and(eq(listings.id, id), eq(listings.status, "active")));
   if (!listing) return { status: "missing" };
@@ -199,7 +201,35 @@ async function saveListing(
     // Only genuinely-new saves count; ref splits channel-button vs /save command.
     trackTg("tg_save", sub.chatId, { listingId: id, ref });
   }
-  return { status: "saved", title: listing.title };
+  return { status: "saved", listing };
+}
+
+// Confirmation for both save entry points: the listing's card image (cached
+// file_id after the channel post — no render cost) captioned with the deadline
+// plan, plus an Open button into the board. Text fallback if the card fails.
+async function replySaveResult(ctx: Context, res: SaveResult, config: BotConfig): Promise<void> {
+  if (res.status === "capped") {
+    await ctx.reply(`You've hit the ${MAX_SAVED}-listing limit — prune some with /saved first.`);
+    return;
+  }
+  if (res.status === "missing") {
+    await ctx.reply("Couldn't find that listing — it may have closed.");
+    return;
+  }
+  const l = res.listing;
+  const caption = formatSaveConfirmation(l);
+  const openButton = Markup.inlineKeyboard([
+    Markup.button.url("Open listing", `${config.siteUrl}/?listing=${l.id}&ref=tg-saved`),
+  ]).reply_markup;
+  try {
+    await sendListingCard(ctx.telegram, ctx.chat!.id, l, { caption, reply_markup: openButton });
+  } catch {
+    await ctx.reply(caption, {
+      parse_mode: "HTML",
+      link_preview_options: { is_disabled: true },
+      reply_markup: openButton,
+    });
+  }
 }
 
 function escape(s: string): string {
