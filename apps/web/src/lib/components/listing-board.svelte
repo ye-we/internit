@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     Share,
+    Check,
     LayoutList,
     Target,
     Coins,
@@ -93,6 +94,29 @@
   const selected = $derived(
     filteredListings.find((l) => l.id === selectedId) ?? filteredListings[0],
   );
+
+  // Share a listing: native share sheet where available (mobile), otherwise
+  // copy the deep link and flash a check on the button that was clicked.
+  // ref=share makes shared links attributable in analytics referrers.
+  let sharedId = $state<string | null>(null);
+  async function share(id: string, title: string) {
+    const url = `${location.origin}/?listing=${id}&ref=share`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+        return;
+      } catch {
+        return; // user dismissed the sheet — not an error, don't fall through
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      sharedId = id;
+      setTimeout(() => (sharedId = sharedId === id ? null : sharedId), 2000);
+    } catch {
+      /* clipboard blocked — nothing sensible to do */
+    }
+  }
 
   // Analytics beacon (fire-and-forget; keepalive survives the navigation away
   // on apply clicks). Server-side tracking can't see these — the board is one
@@ -245,12 +269,26 @@
             >
               <ReminderButton id={listing.id} />
             </span>
+            <!-- span, not <button>: the whole row is already a button and nested
+                 buttons are invalid HTML. Keyboard users share via the detail
+                 toolbar's real button. -->
+            <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions, a11y_interactive_supports_focus -->
             <span
-              class="flex size-6 items-center justify-center rounded border {isActive
+              role="button"
+              aria-label="Copy share link"
+              onclick={(e) => {
+                e.stopPropagation();
+                share(listing.id, listing.title);
+              }}
+              class="flex size-6 items-center justify-center rounded border transition-colors hover:text-[#5a4226] {isActive
                 ? 'border-[#5a4226]/30 text-neutral-700'
                 : 'border-[#b8956a]/40 text-neutral-600'}"
             >
-              <Share class="size-3" />
+              {#if sharedId === listing.id}
+                <Check class="size-3 text-[#5a4226]" />
+              {:else}
+                <Share class="size-3" />
+              {/if}
             </span>
           </div>
         </button>
@@ -483,10 +521,15 @@
               </span>
               <button
                 type="button"
-                aria-label="Share"
+                aria-label="Copy share link"
+                onclick={() => selected && share(selected.id, selected.title)}
                 class="flex h-full items-center justify-center border-l border-[#b8956a]/40 px-3 hover:bg-[#b8956a]/25"
               >
-                <Share class="size-3.5" />
+                {#if selected && sharedId === selected.id}
+                  <Check class="size-3.5 text-[#5a4226]" />
+                {:else}
+                  <Share class="size-3.5" />
+                {/if}
               </button>
             </div>
 

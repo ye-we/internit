@@ -108,7 +108,7 @@ export const load: PageServerLoad = async () => {
       listings: o.listings.map((l) => ({
         id: l.id,
         title: l.title,
-        date: shortDate(l.deadline),
+        date: l.deadline ? shortDate(l.deadline) : "Rolling",
         status: daysLabel(l.deadline),
         location: l.location ?? "—",
         pay: l.isPaid === false ? "Unpaid" : (l.stipendText ?? "Pay unclear"),

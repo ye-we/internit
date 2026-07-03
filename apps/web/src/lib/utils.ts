@@ -16,7 +16,9 @@ export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
   ref?: U | null;
 };
 export function daysLabel(deadline: Date | null): string {
-  if (!deadline) return "—";
+  // No deadline = rolling application — say "open", not a dash that reads as
+  // missing data.
+  if (!deadline) return "open";
   const days = Math.ceil((deadline.getTime() - Date.now()) / 86_400_000);
   return days < 0 ? "expired" : `${days}d`;
 }

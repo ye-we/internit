@@ -142,7 +142,9 @@ export function mapListing(l: ListingFields) {
     source: l.source.toUpperCase(),
     org: l.orgName,
     title: l.title,
-    date: l.deadline ? shortDate(l.deadline) : "—",
+    // "Rolling" matches the card image's DEADLINE cell — no dash pretending
+    // data is missing when the posting simply has no deadline.
+    date: l.deadline ? shortDate(l.deadline) : "Rolling",
     location: l.location ?? "—",
     pay: l.isPaid === false ? "Unpaid" : (l.stipendText ?? "Pay unclear"),
     fit: l.fitScore,
