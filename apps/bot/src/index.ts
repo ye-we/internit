@@ -17,6 +17,8 @@ if (!token) {
 const config: BotConfig = {
   channelId: process.env.TELEGRAM_CHANNEL_ID ?? null,
   siteUrl: (process.env.SITE_URL ?? "https://example.com").replace(/\/$/, ""),
+  // Gates dev-only commands (/test_card). Unset → those commands are disabled.
+  adminChatId: process.env.ADMIN_CHAT_ID ? Number(process.env.ADMIN_CHAT_ID) : null,
 };
 
 const bot = new Telegraf(token);

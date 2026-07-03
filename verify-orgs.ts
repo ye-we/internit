@@ -13,7 +13,9 @@ const INPUT = "./orgs-seed.csv";
 const OUTPUT = "./orgs-verified.csv";
 const DELAY_MS = 1000;
 const TIMEOUT_MS = 10_000;
-const USER_AGENT = "TilqBot/0.1 (+https://yoursite.example/about)";
+const USER_AGENT = `TilqBot/0.1 (+${
+  process.env.SITE_URL ? `${process.env.SITE_URL.replace(/\/$/, "")}/about` : "https://github.com/ye-we/internit"
+})`;
 
 type Row = Record<string, string>;
 

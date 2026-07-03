@@ -9,6 +9,30 @@ const DEFAULT_DELAY_MS = 4_000; // mid-point of the 3–5s window
 const DEFAULT_TIMEOUT_MS = 45_000;
 const DEFAULT_RETRIES = 2;
 const ROBOTS_TTL_MS = 24 * 60 * 60 * 1000;
+// Scraped hosts are untrusted; without a cap, a huge page (or a decompression
+// bomb) is read whole into worker memory by res.text().
+const MAX_BODY_BYTES = 5 * 1024 * 1024;
+
+async function readBodyCapped(res: Response, maxBytes: number): Promise<string> {
+  const declared = Number(res.headers.get("content-length") ?? 0);
+  if (declared > maxBytes) throw new Error(`response too large: ${declared} bytes`);
+  if (!res.body) return "";
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > maxBytes) {
+      await reader.cancel();
+      throw new Error(`response exceeded ${maxBytes} bytes`);
+    }
+    chunks.push(value);
+  }
+  // All current sources serve UTF-8; res.text()'s charset sniffing is lost here.
+  return Buffer.concat(chunks).toString("utf8");
+}
 
 setDefaultResultOrder("ipv4first");
 
@@ -109,7 +133,7 @@ export class PoliteFetcher {
         if (!res.ok) {
           throw new Error(`${method} ${url} → HTTP ${res.status}`);
         }
-        return await res.text();
+        return await readBodyCapped(res, MAX_BODY_BYTES);
       } catch (err) {
         lastError = err;
         if (attempt < maxAttempts) {

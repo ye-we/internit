@@ -15,6 +15,7 @@ module.exports = {
       args: "--filter @internit/worker run start",
       autorestart: true,
       max_restarts: 10,
+      env: { NODE_ENV: "production" },
     },
     {
       name: "internit-bot",
@@ -23,6 +24,7 @@ module.exports = {
       args: "--filter @internit/bot run start",
       autorestart: true,
       max_restarts: 10,
+      env: { NODE_ENV: "production" },
     },
     {
       name: "internit-web",
@@ -31,9 +33,12 @@ module.exports = {
       // adapter-node server. --env-file loads the monorepo-root .env into the
       // process (DATABASE_URL, BETTER_AUTH_*, GOOGLE_*, PUBLIC_TELEGRAM_BOT_USERNAME,
       // PORT, ORIGIN). Requires Node >= 20.6.
+      // NODE_ENV=production matters beyond convention: better-auth keys its
+      // default-secret refusal and rate limiting off it.
       args: "--env-file=.env apps/web/build",
       autorestart: true,
       max_restarts: 10,
+      env: { NODE_ENV: "production" },
     },
   ],
 };

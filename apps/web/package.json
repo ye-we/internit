@@ -40,8 +40,10 @@
 	},
 	"dependencies": {
 		"@internit/db": "workspace:*",
+		"@types/geoip-lite": "^1.4.4",
 		"better-auth": "^1.6.16",
 		"drizzle-orm": "^0.45.2",
+		"geoip-lite": "^2.0.3",
 		"isomorphic-dompurify": "^3.18.0",
 		"pg": "^8.21.0"
 	}

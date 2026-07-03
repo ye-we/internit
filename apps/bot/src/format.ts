@@ -5,9 +5,14 @@ export function daysUntil(deadline: Date | null): number | null {
   return Math.ceil((deadline.getTime() - Date.now()) / 86_400_000);
 }
 
-// Telegram HTML parse mode — far less escaping than MarkdownV2 (only & < >).
+// Telegram HTML parse mode — far less escaping than MarkdownV2. `"` matters
+// too: these strings also go inside href="..." attributes.
 export function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function firstSentences(text: string, n: number): string {
@@ -41,7 +46,10 @@ function fmtDate(d: Date): string {
 export function formatChannelPost(l: Listing, siteUrl: string): string {
   const e = escapeHtml;
   const s = structuredData(l);
-  const lines: string[] = [`<b>${e(l.orgName)}</b>`, e(l.title), ""];
+  // Cap scraped fields before formatting (never truncate the final HTML — that
+  // can cut mid-tag). Telegram photo captions hard-fail past 1024 chars, and a
+  // failed post would otherwise clog the broadcast queue.
+  const lines: string[] = [`<b>${e(l.orgName.slice(0, 120))}</b>`, e(l.title.slice(0, 200)), ""];
 
   const summary = (str(s?.summary) ?? firstSentences(l.descriptionText, 2)).slice(0, 300);
   if (summary) lines.push(e(summary), "");
@@ -52,11 +60,12 @@ export function formatChannelPost(l: Listing, siteUrl: string): string {
     lines.push(e(`Deadline ${fmtDate(l.deadline)}${when}`));
   }
 
-  const links = [`<a href="${e(siteUrl)}/?listing=${l.id}">Read</a>`];
+  // ref=tg lets the site's analytics attribute the visit to the channel.
+  const links = [`<a href="${e(siteUrl)}/?listing=${l.id}&amp;ref=tg">Read</a>`];
   // Prefer the scraper's deterministic apply_url (parsed from the body) over the
   // LLM's application_url.
   const applyUrl = str(l.applyUrl) ?? str(s?.application_url);
-  if (applyUrl && /^https?:\/\//i.test(applyUrl)) {
+  if (applyUrl && applyUrl.length <= 512 && /^https?:\/\//i.test(applyUrl)) {
     links.push(`<a href="${e(applyUrl)}">Apply</a>`);
   }
   links.push(`<a href="${e(l.sourceUrl)}">Source</a>`);

@@ -114,6 +114,30 @@ export const subscribers = pgTable("subscribers", {
   notify72h: boolean("notify_72h").notNull().default(true),
 });
 
+// First-party analytics events, written server-side by the web app (pageviews)
+// and by a tiny beacon (listing views / apply clicks). Cookieless: visitor_hash
+// is a daily-rotating sha256 of ip+ua, never the raw values. listing_id is a
+// soft reference — events outlive pruned listings, so no FK.
+export const pageEvents = pgTable(
+  "page_events",
+  {
+    id: uuidPk(),
+    ts: tstz("ts").notNull().defaultNow(),
+    type: text("type").notNull(), // 'pageview' | 'listing_view' | 'apply_click'
+    path: text("path"),
+    ref: text("ref"),
+    listingId: uuid("listing_id"),
+    visitorHash: text("visitor_hash"),
+    device: text("device"), // 'mobile' | 'desktop' | 'telegram'
+    country: text("country"), // ISO2, resolved offline from ip at insert; never the ip itself
+  },
+  (t) => [
+    index("page_events_ts_idx").on(t.ts),
+    index("page_events_type_ts_idx").on(t.type, t.ts),
+    index("page_events_listing_idx").on(t.listingId),
+  ],
+);
+
 export const scrapeRuns = pgTable(
   "scrape_runs",
   {
@@ -297,6 +321,8 @@ export type Subscriber = typeof subscribers.$inferSelect;
 export type NewSubscriber = typeof subscribers.$inferInsert;
 export type ScrapeRun = typeof scrapeRuns.$inferSelect;
 export type NewScrapeRun = typeof scrapeRuns.$inferInsert;
+export type PageEvent = typeof pageEvents.$inferSelect;
+export type NewPageEvent = typeof pageEvents.$inferInsert;
 export type User = typeof user.$inferSelect;
 export type NewUser = typeof user.$inferInsert;
 export type Session = typeof session.$inferSelect;

@@ -26,8 +26,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
   // it at the top, letting the board focus it.
   const focusId = url.searchParams.get("listing");
   if (focusId && UUID_RE.test(focusId) && !rows.some((r) => r.id === focusId)) {
+    // Expired listings stay reachable (old channel links), but hidden ones are
+    // pulled deliberately (e.g. CSO safety) and must not resolve by UUID.
     const focus = await db.query.listings.findFirst({
-      where: (l, { eq }) => eq(l.id, focusId),
+      where: (l, { eq, ne, and }) => and(eq(l.id, focusId), ne(l.status, "hidden")),
       columns: listingColumns,
     });
     if (focus) rows.unshift(focus);

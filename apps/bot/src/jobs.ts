@@ -12,7 +12,7 @@ import { formatChannelPost } from "./format.js";
 
 const CHANNEL_FIT_THRESHOLD = 70; // CLAUDE.md: fit ≥ 70 auto-posts
 
-export type BotConfig = { channelId: string | null; siteUrl: string };
+export type BotConfig = { channelId: string | null; siteUrl: string; adminChatId: number | null };
 
 export function startJobs(bot: Telegraf, config: BotConfig): Cron[] {
   return [
@@ -59,20 +59,28 @@ async function postNewListings(bot: Telegraf, { channelId, siteUrl }: BotConfig)
     const replyMarkup = remindButton(l, bot.botInfo?.username);
     try {
       // Editorial card as the lead image; caption carries the full post. If the
-      // render ever throws, fall back to a plain text post so a rendering bug can
-      // never stall the broadcast queue.
-      try {
-        const png = await renderListingCard(l);
-        await bot.telegram.sendPhoto(
-          channelId,
-          { source: png },
-          { caption, parse_mode: "HTML", reply_markup: replyMarkup },
-        );
-      } catch (renderErr) {
-        console.error(
-          `[bot] card render failed for ${l.id}, sending text:`,
-          renderErr instanceof Error ? renderErr.message : renderErr,
-        );
+      // render ever throws, or the caption exceeds Telegram's 1024-char photo
+      // cap, fall back to a plain text post so a rendering bug can never stall
+      // the broadcast queue.
+      let usePhoto = caption.length <= 1024;
+      if (usePhoto) {
+        try {
+          const png = await renderListingCard(l);
+          await bot.telegram.sendPhoto(
+            channelId,
+            { source: png },
+            { caption, parse_mode: "HTML", reply_markup: replyMarkup },
+          );
+        } catch (renderErr) {
+          if (isTelegramBadRequest(renderErr)) throw renderErr;
+          console.error(
+            `[bot] card render failed for ${l.id}, sending text:`,
+            renderErr instanceof Error ? renderErr.message : renderErr,
+          );
+          usePhoto = false;
+        }
+      }
+      if (!usePhoto) {
         await bot.telegram.sendMessage(channelId, caption, {
           parse_mode: "HTML",
           link_preview_options: { is_disabled: true },
@@ -82,8 +90,25 @@ async function postNewListings(bot: Telegraf, { channelId, siteUrl }: BotConfig)
       await markPosted(l.id);
     } catch (err) {
       console.error(`[bot] channel post failed for ${l.id}:`, err instanceof Error ? err.message : err);
+      // A 400 from Telegram (parse error, caption too long) will fail the same
+      // way forever; with no orderBy on the queue, retrying it every 15 minutes
+      // would starve everything behind it. Quarantine it and move on. Transient
+      // errors (429, network) stay unposted and retry next tick.
+      if (isTelegramBadRequest(err)) {
+        console.error(`[bot] quarantining listing ${l.id} after non-retryable 400`);
+        await markPosted(l.id);
+      }
     }
   }
+}
+
+function isTelegramBadRequest(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "response" in err &&
+    (err as { response?: { error_code?: number } }).response?.error_code === 400
+  );
 }
 
 async function markPosted(id: string): Promise<void> {

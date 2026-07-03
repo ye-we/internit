@@ -1,0 +1,1 @@
+ALTER TABLE "page_events" ADD COLUMN "country" text;

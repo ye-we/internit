@@ -82,7 +82,13 @@ export const StructuredListingSchema = z.object({
   organization: z.string().nullable(),
   location: z.string().nullable(),
   deadline: z.string().nullable(),
-  application_url: z.string().url().nullable(),
+  // LLM-extracted from attacker-controlled prose; z.url() alone accepts
+  // javascript:/data: schemes, which would land in <a href> on the web.
+  application_url: z
+    .string()
+    .url()
+    .nullable()
+    .transform((u) => (u && /^https?:\/\//i.test(u) ? u : null)),
   application_email: z.string().nullable(),
   application_method: z.enum(["portal", "email", "in-person", "unclear"]),
   ethiopia_access: z.enum([

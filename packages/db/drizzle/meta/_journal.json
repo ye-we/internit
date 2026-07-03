@@ -22,6 +22,20 @@
       "when": 1783013274277,
       "tag": "0002_add_apply_url",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783066939136,
+      "tag": "0003_add_page_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783068159182,
+      "tag": "0004_page_event_country",
+      "breakpoints": true
     }
   ]
 }

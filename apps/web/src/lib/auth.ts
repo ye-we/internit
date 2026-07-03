@@ -4,6 +4,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./server/db";
 import { user, session, account, verification } from "./server/schema";
 
+// Fail fast: without a secret, better-auth falls back to a publicly known
+// default and only refuses when NODE_ENV=production — never run on it.
+if (!env.BETTER_AUTH_SECRET) {
+	throw new Error("BETTER_AUTH_SECRET is not set. Generate one (openssl rand -base64 32) and add it to the root .env.");
+}
+
 export const auth = betterAuth({
 	// Read through $env/dynamic/private so the secret/baseURL come from the
 	// shared monorepo .env (via vite envDir) and the deploy's process.env at

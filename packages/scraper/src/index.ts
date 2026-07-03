@@ -1,8 +1,13 @@
 // Scraper entrypoint. One module per source under ./sources/.
 // v1 ships with ethiongojobs only.
 
-export const SCRAPER_USER_AGENT =
-  "TilqBot/0.1 (+https://example.com/about; internship aggregator for Ethiopian social-studies students)";
+// Politeness policy (CLAUDE.md): the UA must link a real contact page so site
+// operators can reach us. Prefer the deployed site's /about; the public repo
+// is the fallback contact when SITE_URL isn't set.
+const SCRAPER_CONTACT = process.env.SITE_URL
+  ? `${process.env.SITE_URL.replace(/\/$/, "")}/about`
+  : "https://github.com/ye-we/internit";
+export const SCRAPER_USER_AGENT = `TilqBot/0.1 (+${SCRAPER_CONTACT}; internship aggregator for Ethiopian social-studies students)`;
 
 export type ScrapedListing = {
   source: string;

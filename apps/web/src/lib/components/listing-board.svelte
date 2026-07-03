@@ -94,6 +94,18 @@
     filteredListings.find((l) => l.id === selectedId) ?? filteredListings[0],
   );
 
+  // Analytics beacon (fire-and-forget; keepalive survives the navigation away
+  // on apply clicks). Server-side tracking can't see these — the board is one
+  // page, so selecting a listing never navigates.
+  function track(type: "listing_view" | "apply_click", listingId: string) {
+    fetch("/api/track", {
+      method: "POST",
+      keepalive: true,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type, listingId }),
+    }).catch(() => {});
+  }
+
   // Apply target: a direct link when we have one, else a mailto when the org
   // applies by email, else the source page.
   const applyHref = $derived(
@@ -153,6 +165,7 @@
           onclick={() => {
             selectedId = listing.id;
             showDetailMobile = true;
+            track("listing_view", listing.id);
           }}
           class="group relative block w-full px-4 py-3 text-left transition-colors {i <
           filteredListings.length - 1
@@ -448,6 +461,7 @@
                 href={applyHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                onclick={() => selected && track("apply_click", selected.id)}
                 class="flex h-full items-center bg-[#5a4226] px-4 text-[13px] font-semibold text-[#f8efde] hover:bg-[#7a5631]"
               >
                 {applyLabel}

@@ -6,6 +6,8 @@ import { fail, type RequestEvent } from "@sveltejs/kit";
 import { daysLabel } from "$lib/utils";
 import DOMPurify from "isomorphic-dompurify";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const listingColumns = {
   id: true,
   source: true,
@@ -149,7 +151,9 @@ export function mapListing(l: ListingFields) {
     sourceText: l.descriptionText,
     sourceHtml: toSourceHtml(l.descriptionHtml, l.descriptionText),
     sourceUrl: l.sourceUrl,
-    applyUrl: l.applyUrl,
+    // apply_url can be LLM-extracted from attacker-controlled prose; only ever
+    // hand the client an http(s) link (javascript:/data: would be click-XSS).
+    applyUrl: l.applyUrl && /^https?:\/\//i.test(l.applyUrl) ? l.applyUrl : null,
     applyEmail: reader?.applyEmail ?? null,
     scrapedAt: shortDate(l.scrapedAt),
     sections: reader?.sections ?? null,
@@ -175,7 +179,9 @@ export async function toggleBookmark(event: RequestEvent) {
   const listingId = String(
     (await event.request.formData()).get("listingId") ?? "",
   );
-  if (!listingId) return fail(400);
+  // UUID-validate up front: a garbage id otherwise throws a Postgres cast
+  // error → unhandled 500.
+  if (!UUID_RE.test(listingId)) return fail(400);
 
   const deleted = await db
     .delete(bookmarks)
@@ -188,7 +194,12 @@ export async function toggleBookmark(event: RequestEvent) {
     .returning({ id: bookmarks.id });
 
   if (deleted.length === 0) {
-    await db.insert(bookmarks).values({ userId: session.user.id, listingId });
+    try {
+      await db.insert(bookmarks).values({ userId: session.user.id, listingId });
+    } catch {
+      // FK violation — valid UUID shape but no such listing.
+      return fail(400);
+    }
   }
 
   return { listingId, bookmarked: deleted.length === 0 };
