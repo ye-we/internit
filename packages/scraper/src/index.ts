@@ -58,6 +58,8 @@ export {
 } from "./filter.js";
 export { structureListingsBatch, getGeminiRequestCount } from "./structure.js";
 export { ensureStructured, type StructuredResult } from "./structure-listings.js";
+export { evidencedApplyUrl } from "./structure.js";
+export { fetchApplyUrl } from "./adapters/idealist.js";
 export { dispatchOrg, findAdapter, type DispatchOrg, type DispatchResult } from "./dispatch.js";
 export { ADAPTERS, type Adapter, type AdapterConfig } from "./adapters/index.js";
 export { EthioNGOJobsSource } from "./sources/ethiongojobs.js";

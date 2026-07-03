@@ -27,6 +27,23 @@ async function throttle(): Promise<void> {
   geminiRequestCount += 1;
 }
 
+// Hallucination guard for the LLM's application_url. The prompt only carries
+// descriptionText (hrefs already stripped), and despite the "must be explicitly
+// present in the posting" instruction, models invent plausible URLs — e.g.
+// feedbacklabs.typeform.com/internships for a form that really lives at
+// /to/ZR73IBuf. Only trust a URL that appears verbatim in the scraped posting
+// (substring, so a copy with tracking params stripped still passes).
+export function evidencedApplyUrl(
+  url: string,
+  row: { descriptionHtml: string; descriptionText: string },
+): boolean {
+  const needle = url.replace(/\/$/, "").toLowerCase();
+  const hay = `${row.descriptionHtml}\n${row.descriptionText}`
+    .replace(/&amp;/g, "&")
+    .toLowerCase();
+  return needle.length > 0 && hay.includes(needle);
+}
+
 export async function structureListing(
   listing: ScrapedListing,
 ): Promise<StructuredListing | null> {

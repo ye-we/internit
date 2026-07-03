@@ -13,7 +13,7 @@ import { eq } from "drizzle-orm";
 import { getDb, listings as listingsTable, type Listing } from "@internit/db";
 import type { StructuredListing } from "@internit/shared";
 import type { ScrapedListing } from "./index.js";
-import { structureListingsBatch } from "./structure.js";
+import { evidencedApplyUrl, structureListingsBatch } from "./structure.js";
 
 export type StructuredResult = {
   listing: Listing; // repaired deadline / is_paid / status / location applied in memory
@@ -99,8 +99,11 @@ function repairColumns(
   out.stipendText = data.stipend_text;
   // Direct application link the LLM pulled from the prose (e.g. the org's ATS
   // behind an Idealist listing). Only fills a gap — the scraper's deterministic
-  // extractApplyUrl (ethiongojobs anchors) wins when it found one.
-  if (data.application_url && !row.applyUrl) out.applyUrl = data.application_url;
+  // extractApplyUrl (ethiongojobs anchors) wins when it found one — and only
+  // when the URL actually appears in the posting (evidencedApplyUrl).
+  if (data.application_url && !row.applyUrl && evidencedApplyUrl(data.application_url, row)) {
+    out.applyUrl = data.application_url;
+  }
   const deadline = parseDate(data.deadline);
   if (deadline) out.deadline = deadline;
   out.status = statusFor(deadline ?? row.deadline, data);

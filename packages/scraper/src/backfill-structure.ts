@@ -18,7 +18,7 @@ import {
 import type { StructuredListing } from "@internit/shared";
 import { createHash } from "node:crypto";
 import type { ScrapedListing } from "./index.js";
-import { getGeminiRequestCount, structureListingsBatch } from "./structure.js";
+import { evidencedApplyUrl, getGeminiRequestCount, structureListingsBatch } from "./structure.js";
 
 const force = process.argv.includes("--force");
 const dryRun = process.argv.includes("--dry-run");
@@ -140,8 +140,11 @@ function repairValues(row: Listing, data: StructuredListing) {
   out.isPaid = data.is_paid;
   out.stipendText = data.stipend_text;
   // Direct application link the LLM pulled from the prose (e.g. the org's ATS
-  // behind an Idealist listing), when the scraper didn't already extract one.
-  if (data.application_url && !row.applyUrl) out.applyUrl = data.application_url;
+  // behind an Idealist listing), when the scraper didn't already extract one —
+  // and only when the URL actually appears in the posting (evidencedApplyUrl).
+  if (data.application_url && !row.applyUrl && evidencedApplyUrl(data.application_url, row)) {
+    out.applyUrl = data.application_url;
+  }
 
   const deadline = parseDate(data.deadline);
   if (deadline) {

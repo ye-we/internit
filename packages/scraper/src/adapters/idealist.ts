@@ -35,7 +35,6 @@ type Hit = {
   remoteCountry?: string;
   areasOfFocus?: string[];
   detailsStipendProvided?: boolean;
-  hasAts?: boolean; // org applies via an external ATS → the page has the direct URL
 };
 
 export const idealistAdapter: Adapter = {
@@ -65,13 +64,13 @@ export const idealistAdapter: Adapter = {
         const listing = parseHit(hit);
         if (!listing) continue;
         // Idealist's description only carries the org's *general* careers URL; the
-        // specific job link lives behind the "Apply" button on the listing page.
-        // For orgs with an external ATS, fetch the page and lift the exact URL so
-        // readers land on the role, not a careers landing page.
-        if (hit.hasAts) {
-          const applyUrl = await fetchApplyUrl(fetcher, listing.sourceUrl);
-          if (applyUrl) listing.applyUrl = applyUrl;
-        }
+        // specific apply link lives behind the "Apply" button on the listing page.
+        // Fetch it for every kept hit — NOT just hasAts ones: hasAts is false for
+        // form-based applications (typeform/Google Forms), yet the page still
+        // carries the org-registered apply URL. Skipping those left applyUrl null
+        // and let the LLM structurer "fill the gap" with hallucinated links.
+        const applyUrl = await fetchApplyUrl(fetcher, listing.sourceUrl);
+        if (applyUrl) listing.applyUrl = applyUrl;
         out.push(listing);
       }
     }
@@ -169,15 +168,22 @@ const FORM_HOST =
 const SHORTENER = /^(?:bit\.ly|tinyurl\.com|rebrand\.ly|cutt\.ly|lnkd\.in|t\.co|s\.id)$/i;
 
 // The Idealist page carries the org's real apply link — an ATS, a Google/MS
-// form, or a shortlink to one — alongside the org website, social and nav. Score
-// every external URL by how apply-like it is (host + path signals) and take the
-// best; the org homepage and social links score 0 and are ignored.
+// form, or a shortlink to one — alongside the org website, social and nav.
+// First preference: the page state's own "applyUrl" field, which is exactly
+// what Idealist's Apply button uses (present at any JSON-escape depth). Fall
+// back to scoring every external URL by how apply-like it is (host + path
+// signals); the org homepage and social links score 0 and are ignored.
 export function extractAtsUrl(html: string): string | null {
+  const state = html.match(/\\*"applyUrl\\*",\\*"(https?:\/\/[^"\\]+)/);
+  if (state?.[1]) return stripTracking(state[1].replace(/&amp;/g, "&"));
+
   let best: { url: string; score: number } | null = null;
   for (const m of html.matchAll(/https?:\/\/[^\s"'<>)]+/gi)) {
     let u: URL;
     try {
-      u = new URL(m[0].replace(/&amp;/g, "&"));
+      // Trailing \ runs are JSON-escape artifacts (\" at various depths), not
+      // part of the URL.
+      u = new URL(m[0].replace(/&amp;/g, "&").replace(/\\+$/, ""));
     } catch {
       continue;
     }
