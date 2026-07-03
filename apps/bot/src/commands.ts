@@ -169,9 +169,10 @@ async function sendWelcome(ctx: Context): Promise<void> {
       return;
     }
     welcomePng ??= await renderBrandCard({
-      title: "Internit",
-      subtitle: "Internships for Ethiopian social-studies students",
-      tagline: "political science · IR · governance · human rights · peace & conflict",
+      statement: "Internships in governance, rights & peace — found for you.",
+      stamp: "For social-studies students",
+      meta: "Scraped daily · filtered by field · deadline reminders",
+      tags: "political science · IR · human rights · development",
     });
     const msg = await ctx.replyWithPhoto({ source: welcomePng }, opts);
     welcomeFileId = msg.photo?.at(-1)?.file_id ?? null;
