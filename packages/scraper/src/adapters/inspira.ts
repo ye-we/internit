@@ -65,11 +65,13 @@ async function loadRows(fetcher: PoliteFetcher): Promise<UnCareerRow[]> {
   if (payloadCache && Date.now() - payloadCache.at < PAYLOAD_TTL_MS) {
     return payloadCache.rows;
   }
-  // One ~7MB JSON of the entire UN Secretariat. The default 45s timeout can
-  // stall mid-download under concurrent load, failing the whole org — give it
+  // One JSON of the entire UN Secretariat — ~6MB and growing (it broke the
+  // fetcher's default 5MB cap in July 2026). The default 45s timeout can also
+  // stall mid-download under concurrent load, failing the whole org — give both
   // generous headroom (the payload is cached for 30min, so this runs rarely).
   const body = await fetcher.get(ACTIVE_JOBS_URL, "application/json", {
     timeoutMs: 120_000,
+    maxBytes: 16 * 1024 * 1024,
   });
   const json = JSON.parse(body) as { data?: UnCareerRow[] };
   payloadCache = { at: Date.now(), rows: json.data ?? [] };

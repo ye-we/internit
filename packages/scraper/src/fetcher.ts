@@ -60,17 +60,19 @@ export class PoliteFetcher {
   // Posting API) whose hosts blanket-disallow crawlers in robots.txt while
   // explicitly inviting programmatic access in their docs. Throttling still
   // applies. Never use it for HTML scraping.
+  // maxBytes raises the 5MB body cap for known-large trusted payloads (e.g.
+  // Inspira's whole-Secretariat JSON); leave it unset for scraped HTML.
   async get(
     url: string,
     accept = "text/html,application/xhtml+xml",
-    o: { skipRobots?: boolean; timeoutMs?: number } = {},
+    o: { skipRobots?: boolean; timeoutMs?: number; maxBytes?: number } = {},
   ): Promise<string> {
     const u = new URL(url);
     if (this.opts.respectRobots !== false && !o.skipRobots) {
       await this.assertAllowed(u);
     }
     return this.enqueue(u.origin, () =>
-      this.rawRequest(url, { accept, timeoutMs: o.timeoutMs }),
+      this.rawRequest(url, { accept, timeoutMs: o.timeoutMs, maxBytes: o.maxBytes }),
     );
   }
 
@@ -106,6 +108,7 @@ export class PoliteFetcher {
       method?: "GET" | "POST";
       jsonBody?: unknown;
       timeoutMs?: number;
+      maxBytes?: number;
     } = {},
   ): Promise<string> {
     const method = reqOpts.method ?? "GET";
@@ -133,7 +136,7 @@ export class PoliteFetcher {
         if (!res.ok) {
           throw new Error(`${method} ${url} → HTTP ${res.status}`);
         }
-        return await readBodyCapped(res, MAX_BODY_BYTES);
+        return await readBodyCapped(res, reqOpts.maxBytes ?? MAX_BODY_BYTES);
       } catch (err) {
         lastError = err;
         if (attempt < maxAttempts) {
