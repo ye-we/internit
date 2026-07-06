@@ -95,6 +95,14 @@
     filteredListings.find((l) => l.id === selectedId) ?? filteredListings[0],
   );
 
+  // The reader pane is one scroll container reused across listings — jump back
+  // to the top when the selection changes, or the next listing opens mid-scroll.
+  let readerEl = $state<HTMLDivElement | null>(null);
+  $effect(() => {
+    void selected?.id;
+    readerEl?.scrollTo(0, 0);
+  });
+
   // Share a listing: native share sheet where available (mobile), otherwise
   // copy the deep link and flash a check on the button that was clicked.
   // ref=share makes shared links attributable in analytics referrers.
@@ -438,6 +446,7 @@
         class="relative min-h-0 flex-1 border-[#b8956a]/40 lg:rounded-tl-md lg:border-t lg:border-l"
       >
         <div
+          bind:this={readerEl}
           class="absolute inset-0 overflow-y-auto overscroll-contain px-4 pt-5 pb-16 sm:px-6 lg:px-10 lg:pt-6"
         >
           {#if selected}
