@@ -263,20 +263,20 @@
               ? ''
               : 'opacity-0 group-hover:opacity-100'}"
           >
-            <span
-              class="flex size-6 items-center justify-center rounded border {isActive
+            <BookmarkButton
+              id={listing.id}
+              {bookmarked}
+              {signedIn}
+              class="size-6 rounded border {isActive
                 ? 'border-[#5a4226]/30 text-neutral-700'
                 : 'border-[#b8956a]/40 text-neutral-600'}"
-            >
-              <BookmarkButton id={listing.id} {bookmarked} {signedIn} />
-            </span>
-            <span
-              class="flex size-6 items-center justify-center rounded border {isActive
+            />
+            <ReminderButton
+              id={listing.id}
+              class="size-6 rounded border {isActive
                 ? 'border-[#5a4226]/30 text-neutral-700'
                 : 'border-[#b8956a]/40 text-neutral-600'}"
-            >
-              <ReminderButton id={listing.id} />
-            </span>
+            />
             <!-- span, not <button>: the whole row is already a button and nested
                  buttons are invalid HTML. Keyboard users share via the detail
                  toolbar's real button. -->
@@ -513,21 +513,18 @@
               >
                 {applyLabel}
               </a>
-              <span
-                class="flex h-full items-center justify-center border-l border-[#b8956a]/40 px-3 text-neutral-700 hover:bg-[#b8956a]/25"
-              >
-                <BookmarkButton
-                  id={selected.id}
-                  {bookmarked}
-                  {signedIn}
-                  size="size-3.5"
-                />
-              </span>
-              <span
-                class="flex h-full items-center justify-center border-l border-[#b8956a]/40 px-3 text-neutral-700 hover:bg-[#b8956a]/25"
-              >
-                <ReminderButton id={selected.id} size="size-3.5" />
-              </span>
+              <BookmarkButton
+                id={selected.id}
+                {bookmarked}
+                {signedIn}
+                size="size-3.5"
+                class="h-full border-l border-[#b8956a]/40 px-3 text-neutral-700 hover:bg-[#b8956a]/25"
+              />
+              <ReminderButton
+                id={selected.id}
+                size="size-3.5"
+                class="h-full border-l border-[#b8956a]/40 px-3 text-neutral-700 hover:bg-[#b8956a]/25"
+              />
               <button
                 type="button"
                 aria-label="Copy share link"
