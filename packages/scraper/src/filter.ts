@@ -71,16 +71,22 @@ const REMOTE_MODALITY =
 const REMOTE_GEOGRAPHY =
   /\bremote\s+(areas?|regions?|villages?|communit\w+|locations?|location|field|districts?|woredas?|zones?|parts?|settings?|sites?|rural)\b/i;
 // Phrases that cancel a remote signal. The `no(?:t)?\s+(?:\w+\s+){0,2}remote`
-// arm catches "not remote", "no remote", and "not a remote position".
+// arm catches "not remote", "no remote", and "not a remote position". The
+// hybrid/percentage/days arms catch partial-remote perks anchored to a foreign
+// duty station ("up to 40% of remote work", "2 days remote per week") — the
+// 1–2-digit bound deliberately lets "100% remote" through as fully remote.
 const REMOTE_NEG =
-  /\b(no(?:t)?\s+(?:\w+\s+){0,2}remote|non[-\s]?remote|on[-\s]?site|in[-\s]?person|in\s+the\s+office|must\s+relocate|relocation\s+(?:is\s+)?required|based\s+(?:in|at)\s+(?:our|the)\s+\S+\s+office)\b/i;
+  /\b(no(?:t)?\s+(?:\w+\s+){0,2}remote|non[-\s]?remote|on[-\s]?site|in[-\s]?person|in\s+the\s+office|must\s+relocate|relocation\s+(?:is\s+)?required|based\s+(?:in|at)\s+(?:our|the)\s+\S+\s+office|hybrid|\d{1,2}\s*%\s+(?:of\s+)?remote|\d+\s+days?\s+(?:of\s+)?remote)\b/i;
 
-// Travel / visa / relocation / housing explicitly provided → abroad but doable.
+// Travel / visa / relocation explicitly provided → abroad but doable.
 // Deliberately precise: vague phrases like "fully funded" (usually a programme
 // scholarship, not relocation) and "visa support" (matches "visa support
-// letter", which is NOT sponsorship) are excluded.
+// letter", which is NOT sponsorship) are excluded. Accommodation/housing alone
+// is NOT sponsorship either — "basic accommodation provided" at a foreign duty
+// station doesn't cover the flight and visa that actually gate an Ethiopian
+// applicant.
 const SPONSOR_RE =
-  /\b(visa\s+sponsorship|visa\s+(?:will\s+be\s+)?(?:sponsored|provided|arranged)|relocation\s+(?:support|assistance|package|allowance|provided|covered|reimbursed)|(?:travel|airfare|flights?|accommodation|housing)\s+(?:costs?\s+|expenses?\s+)?(?:are\s+|will\s+be\s+|is\s+)?(?:provided|covered|reimbursed|arranged)|(?:cover|covers|provide|provides|reimburse|reimburses)\s+(?:the\s+(?:cost\s+of\s+)?|your\s+|all\s+)?(?:travel|airfare|flights?|relocation|accommodation|housing))\b/i;
+  /\b(visa\s+sponsorship|visa\s+(?:will\s+be\s+)?(?:sponsored|provided|arranged)|relocation\s+(?:support|assistance|package|allowance|provided|covered|reimbursed)|(?:travel|airfare|flights?)\s+(?:costs?\s+|expenses?\s+)?(?:are\s+|will\s+be\s+|is\s+)?(?:provided|covered|reimbursed|arranged)|(?:cover|covers|provide|provides|reimburse|reimburses)\s+(?:the\s+(?:cost\s+of\s+)?|your\s+|all\s+)?(?:travel|airfare|flights?|relocation))\b/i;
 // Cancels a sponsorship signal: "we do not cover travel", "cannot provide
 // visa", or the giveaway "visa support letter".
 const SPONSOR_NEG =

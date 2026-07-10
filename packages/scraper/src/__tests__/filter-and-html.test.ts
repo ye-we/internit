@@ -287,6 +287,26 @@ describe("ethiopiaAccess — only realistically reachable roles", () => {
         descriptionText: "Dedicated to fully funded summer internships for exceptional students.",
       },
     ],
+    [
+      "Partial-percentage remote anchored abroad is hybrid, not remote",
+      {
+        location: "Switzerland",
+        descriptionText:
+          "Based in Geneva. Up to 40% of remote work on a weekly basis after the first 3 months.",
+      },
+    ],
+    [
+      "Hybrid arrangement abroad is not remote",
+      { location: "Nairobi, Kenya", descriptionText: "This is a hybrid remote role." },
+    ],
+    [
+      "Accommodation alone is not travel sponsorship",
+      {
+        location: "India",
+        descriptionText:
+          "Stipend of 2000 Rupees per month. 2 meals a day, 6 days a week, and basic accommodation provided.",
+      },
+    ],
   ];
 
   for (const [name, parts] of accessible) {
