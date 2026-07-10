@@ -19,19 +19,23 @@ import type { Adapter, AdapterConfig, AdapterOpts } from "./types.js";
 import { isEthiopiaAccessible, isInternship } from "./types.js";
 
 // Opportunity blogs from orgs-seed.csv known to run WordPress with the REST
-// API exposed. ethiongojobs stays on its bespoke source (Jannah-specific
-// noise stripping); add hosts here as they're verified.
-const KNOWN_WP_HOSTS = new Set([
-  "ngojobsinafrica.com",
-  "www.ngojobsinafrica.com",
-  "opportunitiesforafricans.com",
-  "www.opportunitiesforafricans.com",
-  "opportunitydesk.org",
-  "www.opportunitydesk.org",
-  "globalsouthopportunities.com",
-  "www.globalsouthopportunities.com",
-  "opportunitiesforyouth.org",
-  "www.opportunitiesforyouth.org",
+// API exposed, mapped to the REST base their postings live under: plain blogs
+// use core "posts"; WP Job Manager boards (harmeejobs) expose "job-listings".
+// ethiongojobs stays on its bespoke source (Jannah-specific noise stripping);
+// add hosts here as they're verified.
+const KNOWN_WP_HOSTS = new Map([
+  ["ngojobsinafrica.com", "posts"],
+  ["www.ngojobsinafrica.com", "posts"],
+  ["opportunitiesforafricans.com", "posts"],
+  ["www.opportunitiesforafricans.com", "posts"],
+  ["opportunitydesk.org", "posts"],
+  ["www.opportunitydesk.org", "posts"],
+  ["globalsouthopportunities.com", "posts"],
+  ["www.globalsouthopportunities.com", "posts"],
+  ["opportunitiesforyouth.org", "posts"],
+  ["www.opportunitiesforyouth.org", "posts"],
+  ["harmeejobs.com", "job-listings"],
+  ["www.harmeejobs.com", "job-listings"],
 ]);
 
 type WpPost = {
@@ -60,10 +64,12 @@ export const wordpressAdapter: Adapter = {
   ): Promise<ScrapedListing[]> {
     const max = opts.max ?? 20;
     const origin = new URL(config.url).origin;
-    const host = new URL(config.url).hostname.replace(/^www\./, "");
+    const hostname = new URL(config.url).hostname.toLowerCase();
+    const host = hostname.replace(/^www\./, "");
+    const restBase = KNOWN_WP_HOSTS.get(hostname) ?? "posts";
 
     const apiUrl =
-      `${origin}/wp-json/wp/v2/posts?search=internship&per_page=${Math.min(max * 2, 50)}` +
+      `${origin}/wp-json/wp/v2/${restBase}?search=internship&per_page=${Math.min(max * 2, 50)}` +
       "&orderby=date&order=desc&_fields=id,link,date,title,content";
     const body = await fetcher.get(apiUrl, "application/json");
     const posts = JSON.parse(body) as WpPost[];
